@@ -35,19 +35,22 @@
     /* TABS */
     .tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin-bottom: 20px;
       background: #1e293b;
       padding: 6px;
       border-radius: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+    .tabs::-webkit-scrollbar { display: none; }
     .tab-btn {
       padding: 12px 8px;
       border: none;
       background: transparent;
       color: #94a3b8;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       border-radius: 12px;
       cursor: pointer;
@@ -55,7 +58,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
+      white-space: nowrap;
+      min-width: 0;
     }
     .tab-btn.active {
       background: linear-gradient(135deg, #22d3ee, #06b6d4);
@@ -525,18 +530,12 @@
 
     <!-- TABS NAVIGATION -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('chainless')">
-        🔥 Chainless
-      </button>
-      <button class="tab-btn" onclick="showTab('picnic')">
-        💳 Picnic
-      </button>
-      <button class="tab-btn" onclick="showTab('okx')">
-        🌎 OKX
-      </button>
-      <button class="tab-btn external" onclick="window.open('https://marcoscleber10.github.io/pool/', '_blank')">
-        🏊 Top Pool
-      </button>
+      <button class="tab-btn active" onclick="showTab('chainless')">🔥 Chainless</button>
+      <button class="tab-btn" onclick="showTab('picnic')">💳 Picnic</button>
+      <button class="tab-btn" onclick="showTab('okx')">🌎 OKX</button>
+      <button class="tab-btn external" onclick="window.open('https://marcoscleber10.github.io/pool/', '_blank')">🏊 Top Pool</button>
+      <button class="tab-btn" onclick="showTab('dca')">📈 DCA BTC</button>
+      <button class="tab-btn" onclick="showTab('sp500')">📊 S&P 500</button>
     </div>
 
     <!-- ABA 1: CHAINLESS (DESTAQUE PRINCIPAL) -->
@@ -833,6 +832,90 @@
       </div>
     </div>
 
+    <!-- ABA 5: DCA BITCOIN -->
+    <div id="dca" class="tab-content">
+      <div class="card">
+        <div class="card-title">📊 Simulador DCA em Tempo Real</div>
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">Mercado Agora</div>
+              <div class="app-subtitle">Atualização automática</div>
+            </div>
+            <div>🌐</div>
+          </div>
+          <div class="yield-list">
+            <div class="yield-item">
+              <div>Bitcoin (BTC)</div>
+              <div id="btcPrice">Carregando...</div>
+            </div>
+            <div class="yield-item">
+              <div>Dólar (USD/BRL)</div>
+              <div id="usdPrice">Carregando...</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <label>💰 Valor mensal (R$)</label>
+          <input id="monthly" type="number" value="500" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+        <div style="margin-top: 12px;">
+          <label>📅 Meses</label>
+          <input id="months" type="number" value="12" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+        <button class="btn btn-success" onclick="simulateDCA()">🚀 Simular DCA</button>
+        <div class="highlight" id="result" style="display:none;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚖️ BTC vs Poupança vs CDI</div>
+        <label>📊 CDI (% ao ano)</label>
+        <input id="cdiRate" type="number" value="13.15" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9; margin-top:6px;">
+        <button class="btn btn-secondary" onclick="compareInvestments()">📈 Comparar</button>
+        <div id="compareResult" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <!-- ABA 6: S&P 500 (NOVA ABA) -->
+    <div id="sp500" class="tab-content">
+      <div class="card">
+        <div class="card-title">📊 DCA no S&P 500 (SPY)</div>
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">Mercado Global</div>
+              <div class="app-subtitle">SP500 + Dólar</div>
+            </div>
+            <div>🇺🇸</div>
+          </div>
+          <div class="yield-list">
+            <div class="yield-item">
+              <div>SPY (S&P 500)</div>
+              <div id="spyPrice">Carregando...</div>
+            </div>
+            <div class="yield-item">
+              <div>Dólar (USD/BRL)</div>
+              <div id="usdPriceSP">Carregando...</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <label>💰 Valor mensal (R$)</label>
+          <input id="monthlySP" type="number" value="500" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+        <div style="margin-top: 12px;">
+          <label>📅 Meses</label>
+          <input id="monthsSP" type="number" value="12" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+        <button class="btn btn-success" onclick="simulateSP500()">🚀 Simular SP500</button>
+        <div class="highlight" id="resultSP" style="display:none;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚖️ SP500 vs BTC vs CDI</div>
+        <button class="btn btn-secondary" onclick="compareSPvsBTC()">📈 Comparar Estratégias</button>
+        <div id="compareSP" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
     <!-- FOOTER -->
     <div class="footer">
       <p>💡 Dica: Comece pela Chainless (maior rendimento) → depois ative o Picnic (cashback) → depois OKX (dólar)</p>
@@ -845,28 +928,20 @@
   </div>
 
   <script>
+    // ===== TAB NAVIGATION =====
     function showTab(tabName) {
-      // Hide all tabs
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
-      
-      // Remove active class from all buttons
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
       });
-      
-      // Show selected tab
       document.getElementById(tabName).classList.add('active');
-      
-      // Add active class to clicked button
       event.target.classList.add('active');
-      
-      // Smooth scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Animation on load
+    // ===== ANIMATION ON LOAD =====
     document.addEventListener('DOMContentLoaded', () => {
       const cards = document.querySelectorAll('.card');
       cards.forEach((card, index) => {
@@ -879,6 +954,163 @@
         }, 100 * index);
       });
     });
+
+    // ===== DCA BITCOIN - APIS =====
+    let btcBRL = 0;
+    let usdBRL = 0;
+
+    async function fetchBTC() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl");
+        const data = await res.json();
+        btcBRL = data.bitcoin.brl;
+        document.getElementById("btcPrice").innerText = "R$ " + btcBRL.toLocaleString('pt-BR');
+      } catch(e) {
+        document.getElementById("btcPrice").innerText = "Erro API";
+      }
+    }
+
+    async function fetchUSD() {
+      try {
+        const res = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
+        const data = await res.json();
+        usdBRL = parseFloat(data.USDBRL.bid);
+        document.getElementById("usdPrice").innerText = "R$ " + usdBRL.toFixed(2);
+      } catch(e) {
+        document.getElementById("usdPrice").innerText = "Erro API";
+      }
+    }
+
+    // ===== DCA BITCOIN - SIMULADOR =====
+    function simulateDCA() {
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const months = parseInt(document.getElementById("months").value);
+      if (!btcBRL || !usdBRL) { alert("Aguarde carregar os preços..."); return; }
+      let totalInvested = monthly * months;
+      let btcAccumulated = (monthly / btcBRL) * months;
+      let btcFuture = btcBRL * 2;
+      let futureValue = btcAccumulated * btcFuture;
+      let usdValue = futureValue / usdBRL;
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      result.innerHTML = `
+        <div class="highlight-title">📊 Resultado</div>
+        Investido: <b>R$ ${totalInvested.toLocaleString('pt-BR')}</b><br>
+        BTC acumulado: <b>${btcAccumulated.toFixed(6)} BTC</b><br><br>
+        🔮 Cenário BTC 2x:<br>
+        Valor futuro: <b>R$ ${futureValue.toLocaleString('pt-BR')}</b><br>
+        Em dólar: <b>$ ${usdValue.toFixed(2)}</b>
+      `;
+    }
+
+    // ===== DCA BITCOIN - COMPARAÇÃO =====
+    function compareInvestments() {
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const months = parseInt(document.getElementById("months").value);
+      const cdiRate = parseFloat(document.getElementById("cdiRate").value) / 100;
+      let poupanca = 0, cdi = 0, btc = 0;
+      let taxaPoup = 0.06 / 12;
+      let taxaCDI = cdiRate / 12;
+      for (let i = 0; i < months; i++) {
+        poupanca = (poupanca + monthly) * (1 + taxaPoup);
+        cdi = (cdi + monthly) * (1 + taxaCDI);
+        btc += monthly / btcBRL;
+      }
+      let btcValue = btc * (btcBRL * 2);
+      document.getElementById("compareResult").innerHTML = `
+        <div class="comparison">
+          <div class="before"><div class="before-title">🏦 Poupança</div><div class="before-value">R$ ${poupanca.toLocaleString('pt-BR')}</div></div>
+          <div class="before"><div class="before-title">📊 CDI</div><div class="before-value">R$ ${cdi.toLocaleString('pt-BR')}</div></div>
+          <div class="after"><div class="after-title">🚀 Bitcoin</div><div class="after-value">R$ ${btcValue.toLocaleString('pt-BR')}</div></div>
+        </div>
+        <div class="highlight">
+          Investido: <b>R$ ${(monthly * months).toLocaleString('pt-BR')}</b><br><br>
+          🏦 Poupança: R$ ${poupanca.toLocaleString('pt-BR')}<br>
+          📊 CDI: R$ ${cdi.toLocaleString('pt-BR')}<br>
+          🚀 BTC: R$ ${btcValue.toLocaleString('pt-BR')}<br><br>
+          🔥 BTC vs Poupança: <b>+R$ ${(btcValue - poupanca).toLocaleString('pt-BR')}</b><br>
+          🔥 BTC vs CDI: <b>+R$ ${(btcValue - cdi).toLocaleString('pt-BR')}</b>
+        </div>
+      `;
+    }
+
+    // ===== DCA BITCOIN - INIT =====
+    fetchBTC(); fetchUSD();
+    setInterval(() => { fetchBTC(); fetchUSD(); }, 60000);
+
+    // ===== S&P 500 - APIS =====
+    let spyUSD = 0;
+    let usdBRL_SP = 0;
+
+    async function fetchSPY() {
+      try {
+        const res = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=SPY");
+        const data = await res.json();
+        spyUSD = data.quoteResponse.result[0].regularMarketPrice;
+        document.getElementById("spyPrice").innerText = "$ " + spyUSD.toFixed(2);
+      } catch(e) {
+        document.getElementById("spyPrice").innerText = "Erro API";
+      }
+    }
+
+    async function fetchUSD_SP() {
+      try {
+        const res = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
+        const data = await res.json();
+        usdBRL_SP = parseFloat(data.USDBRL.bid);
+        document.getElementById("usdPriceSP").innerText = "R$ " + usdBRL_SP.toFixed(2);
+      } catch(e) {
+        document.getElementById("usdPriceSP").innerText = "Erro API";
+      }
+    }
+
+    // ===== S&P 500 - SIMULADOR =====
+    function simulateSP500() {
+      const monthly = parseFloat(document.getElementById("monthlySP").value);
+      const months = parseInt(document.getElementById("monthsSP").value);
+      if (!spyUSD || !usdBRL_SP) { alert("Aguarde carregar os preços..."); return; }
+      let totalInvested = monthly * months;
+      let monthlyUSD = monthly / usdBRL_SP;
+      let shares = (monthlyUSD / spyUSD) * months;
+      let growth = 1 + (0.08 * (months / 12));
+      let futurePrice = spyUSD * growth;
+      let futureValueUSD = shares * futurePrice;
+      let futureValueBRL = futureValueUSD * usdBRL_SP;
+      document.getElementById("resultSP").style.display = "block";
+      document.getElementById("resultSP").innerHTML = `
+        Investido: <b>R$ ${totalInvested.toLocaleString('pt-BR')}</b><br>
+        Cotas SPY: <b>${shares.toFixed(4)}</b><br><br>
+        📈 Cenário (8% a.a.):<br>
+        Valor futuro: <b>R$ ${futureValueBRL.toLocaleString('pt-BR')}</b><br>
+        Em dólar: <b>$ ${futureValueUSD.toFixed(2)}</b>
+      `;
+    }
+
+    // ===== S&P 500 - COMPARAÇÃO =====
+    function compareSPvsBTC() {
+      const monthly = parseFloat(document.getElementById("monthlySP").value);
+      const months = parseInt(document.getElementById("monthsSP").value);
+      let total = monthly * months;
+      let sp = total * (1 + 0.08 * (months/12));
+      let btc = total * 2;
+      let cdi = total * (1 + 0.13 * (months/12));
+      document.getElementById("compareSP").innerHTML = `
+        <div class="comparison">
+          <div class="before"><div class="before-title">📊 SP500</div><div class="before-value">R$ ${sp.toLocaleString('pt-BR')}</div></div>
+          <div class="before"><div class="before-title">📈 CDI</div><div class="before-value">R$ ${cdi.toLocaleString('pt-BR')}</div></div>
+          <div class="after"><div class="after-title">🚀 Bitcoin</div><div class="after-value">R$ ${btc.toLocaleString('pt-BR')}</div></div>
+        </div>
+        <div class="highlight">
+          💡 Estratégia global:<br><br>
+          50% BTC + 30% SP500 + 20% USD<br><br>
+          Equilíbrio entre crescimento e proteção.
+        </div>
+      `;
+    }
+
+    // ===== S&P 500 - INIT =====
+    fetchSPY(); fetchUSD_SP();
+    setInterval(() => { fetchSPY(); fetchUSD_SP(); }, 60000);
   </script>
 </body>
 </html>
