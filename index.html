@@ -1,289 +1,1272 @@
-✅ **ENTENDI!** Você quer um **campo editável** para ajustar o APY manualmente, já que 7.5% está abaixo da realidade.
-
-Vou adicionar um input para você digitar o APY esperado, com base nos cenários reais que você mencionou.
-
-Aqui está o código atualizado **apenas da aba S&P 500** (substitua apenas essa parte):
-
-```html
-<!-- ABA 6: S&P 500 (POOL SPY-USDC NA SOLANA) - ATUALIZADA -->
-<div id="sp500" class="tab-content">
-  <div class="card">
-    <div class="card-title">📊 DCA em Pool SPY-USDC (Solana)</div>
-    <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
-      Invista no S&P 500 via pool de liquidez na Solana com yield em DeFi
-    </p>
-    
-    <!-- DADOS DA POOL -->
-    <div class="app-screen">
-      <div class="app-header">
-        <div>
-          <div class="app-title">Pool SPY-USDC</div>
-          <div class="app-subtitle">Solana • Raydium/Orca • DefiLlama API</div>
-        </div>
-        <div style="font-size: 24px;">📈</div>
-      </div>
-      
-      <div id="poolDataContainer">
-        <div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando dados da pool...</div>
-      </div>
-
-      <!-- CAMPO EDITÁVEL DE APY -->
-      <div style="margin-top: 16px; padding: 14px; background: rgba(250, 204, 21, 0.1); border: 2px solid #facc15; border-radius: 12px;">
-        <label style="display: block; font-size: 13px; font-weight: 700; color: #facc15; margin-bottom: 8px;">
-          📝 Ajustar APY Esperado (% a.a.)
-        </label>
-        <input id="customAPY" type="number" value="15" step="0.5" min="1" max="100" 
-               style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid #facc15; 
-                      background: #0f172a; color: #f1f5f9; font-size: 18px; font-weight: 700; text-align: center;"
-               onchange="updateAPYFromInput()">
-        <div style="margin-top: 8px; font-size: 11px; color: #94a3b8; text-align: center;">
-          💡 Cenários: Fraco 8-12% • Médio 12-18% • Bom 15-25%
-        </div>
-        <div style="margin-top: 6px; font-size: 11px; color: #facc15; text-align: center;">
-          Usando: <b id="displayAPY">15%</b> a.a. (editável)
-        </div>
-      </div>
-    </div>
-
-    <!-- SIMULADOR DCA -->
-    <div style="margin-top: 16px;">
-      <label>💰 Valor mensal (R$)</label>
-      <input id="monthlySPY" type="number" value="500" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
-    </div>
-    <div style="margin-top: 12px;">
-      <label>📅 Meses</label>
-      <input id="monthsSPY" type="number" value="12" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
-    </div>
-
-    <button class="btn btn-success" onclick="simulateSPYDCA()">🚀 Simular DCA na Pool</button>
-    <div class="highlight" id="resultSPY" style="display:none;"></div>
-
-    <!-- COMPARAÇÃO -->
-    <div style="margin-top: 20px;">
-      <div class="card-title">⚖️ Pool vs BTC vs CDI</div>
-      <button class="btn btn-secondary" onclick="compareSPYInvestments()">📈 Comparar Estratégias</button>
-      <div id="compareSPY" style="margin-top:16px;"></div>
-    </div>
-
-    <div class="disclaimer">
-      ⚠️ Pools DeFi envolvem risco de impermanent loss. APY varia conforme volume e rewards.
-    </div>
-  </div>
-</div>
-```
-
-E atualize o **JavaScript** (adicione/ substitua estas funções):
-
-```javascript
-// ===== STATE GLOBAL (adicione isso) =====
-let customAPY = 15; // APY personalizado padrão 15%
-
-// ===== FUNÇÃO PARA ATUALIZAR APY DO INPUT =====
-function updateAPYFromInput() {
-  const input = document.getElementById('customAPY');
-  customAPY = parseFloat(input.value) || 15;
-  document.getElementById('displayAPY').innerText = customAPY.toFixed(1) + '%';
-}
-
-// ===== DEFI LLAMA - SPY-USDC POOL (atualizada) =====
-async function fetchSPYPool() {
-  const container = document.getElementById('poolDataContainer');
-  container.innerHTML = '<div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando dados da pool...</div>';
-  
-  try {
-    const res = await fetch("https://yields.llama.fi/pools");
-    const data = await res.json();
-    
-    // Filtra pools da Solana com USDC e TVL > $100k
-    const solanaPools = data.data.filter(p => 
-      p.chain === "Solana" && 
-      p.symbol.includes("USDC") &&
-      p.tvlUsd > 100000
-    );
-    
-    // Busca pool com SPY ou similar
-    let spyPool = solanaPools.find(p => 
-      p.symbol.toUpperCase().includes("SPY") || 
-      p.symbol.toUpperCase().includes("SPX")
-    );
-    
-    // Se não achar SPY, usa a pool USDC mais líquida
-    if (!spyPool) {
-      solanaPools.sort((a, b) => b.tvlUsd - a.tvlUsd);
-      spyPool = solanaPools[0];
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💰 Ganhar Dinheiro Inteligente</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      line-height: 1.5;
+      padding: 16px;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
     }
     
-    if (!spyPool) {
-      container.innerHTML = '<div style="text-align:center; padding: 20px; color: #f87171;">Nenhuma pool encontrada</div>';
-      return;
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #facc15, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     
-    spyPoolData = spyPool;
+    /* TABS */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+      background: #1e293b;
+      padding: 6px;
+      border-radius: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+    }
+    .tab-btn.external {
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #0f172a;
+    }
     
-    // Renderiza dados da pool
-    container.innerHTML = `
-      <div class="yield-item destaque" style="margin: 12px 0; border-color: #8b5cf6;">
-        <div class="yield-coin">
-          <div class="yield-icon spy">📊</div>
-          <div>
-            <div style="font-weight: 700; color: #f1f5f9;">${spyPool.symbol}</div>
-            <div class="yield-label">${spyPool.project} • Solana</div>
+    /* TAB CONTENT */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* CARDS */
+    .card {
+      background: linear-gradient(145deg, #1e293b, #1a2332);
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    
+    /* CARD DESTAQUE CHAINLESS */
+    .card-destaque {
+      background: linear-gradient(145deg, #1e293b, #2d1f1f);
+      border: 2px solid #facc15;
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.2), 0 8px 30px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-destaque::before {
+      content: "🔥 MAIOR RENDIMENTO";
+      position: absolute;
+      top: 12px;
+      right: -30px;
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #0f172a;
+      padding: 4px 40px;
+      font-size: 10px;
+      font-weight: 800;
+      transform: rotate(45deg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .badge-destaque {
+      display: inline-block;
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #0f172a;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* APP SCREENSHOT REPRESENTATION */
+    .app-screen {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 16px 0;
+      border: 2px solid #334155;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #334155;
+    }
+    .app-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .app-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    
+    /* YIELD ITEMS */
+    .yield-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .yield-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.8);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+    }
+    .yield-item.destaque {
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(245, 158, 11, 0.1));
+      border: 2px solid #facc15;
+      padding: 16px;
+    }
+    .yield-coin {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .yield-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .yield-icon.usdt { background: #22d3ee; color: #0f172a; }
+    .yield-icon.usdc { background: #3b82f6; color: white; }
+    .yield-icon.xaut { background: #fbbf24; color: #0f172a; }
+    .yield-icon.btc { background: #f97316; color: white; }
+    .yield-icon.brl { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+    .yield-icon.spy { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
+    .yield-percent {
+      font-weight: 800;
+      font-size: 16px;
+      color: #4ade80;
+    }
+    .yield-item.destaque .yield-percent {
+      font-size: 20px;
+      color: #facc15;
+    }
+    .yield-label {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    
+    /* BENEFIT CARDS */
+    .benefit-card {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+      border: 1px solid #22c55e;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+    .benefit-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .benefit-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #4ade80;
+      line-height: 1;
+    }
+    .benefit-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+    
+    /* CARD REPRESENTATION */
+    .card-visual {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      border: 1px solid #404040;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-visual::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card-chip {
+      width: 40px;
+      height: 28px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .card-number {
+      font-family: monospace;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+    .card-rewards {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .card-reward-item {
+      background: rgba(74, 222, 128, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .card-reward-value {
+      color: #4ade80;
+      font-weight: 700;
+    }
+    
+    /* BADGES */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .badge {
+      background: #334155;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-percent {
+      color: #4ade80;
+      font-weight: 700;
+    }
+    
+    /* BENEFITS LIST */
+    .benefits {
+      list-style: none;
+      margin: 12px 0;
+    }
+    .benefits li {
+      padding: 10px 0;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #334155;
+    }
+    .benefits li:last-child { border-bottom: none; }
+    .benefits li::before {
+      content: "✓";
+      color: #4ade80;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    /* BUTTONS */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      color: #0f172a;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      box-shadow: 0 4px 14px rgba(34, 211, 238, 0.3);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+      box-shadow: 0 4px 14px rgba(74, 222, 128, 0.3);
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    
+    /* STEPS */
+    .steps { margin: 16px 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: #0f172a;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 4px solid #22d3ee;
+    }
+    .step-number {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #0f172a;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .step-text {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    
+    /* BEFORE/AFTER */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .before, .after {
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .before {
+      background: rgba(248, 113, 113, 0.1);
+      border: 2px solid #f87171;
+    }
+    .after {
+      background: rgba(74, 222, 128, 0.1);
+      border: 2px solid #4ade80;
+    }
+    .before-title, .after-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .before-title { color: #f87171; }
+    .after-title { color: #4ade80; }
+    .before-value, .after-value {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .before-value { color: #f87171; }
+    .after-value { color: #4ade80; }
+    
+    /* HIGHLIGHT BOX */
+    .highlight {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(6, 182, 212, 0.1));
+      border: 1px solid #22d3ee;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .highlight-title {
+      color: #22d3ee;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    /* DISCLAIMER */
+    .disclaimer {
+      font-size: 12px;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      border-left: 3px solid #fbbf24;
+    }
+    .warning {
+      font-size: 12px;
+      color: #f87171;
+      background: rgba(248, 113, 113, 0.1);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      border-left: 3px solid #f87171;
+    }
+    
+    /* TOP POOL SECTION */
+    .pool-section {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .pool-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .pool-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .pool-desc {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .pool-features {
+      text-align: left;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .pool-features li {
+      padding: 8px 0;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    /* NOVO: Toggle & Multiplicador */
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.6);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #334155;
+    }
+    .control-label { font-size: 14px; font-weight: 600; color: #cbd5e1; }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 30px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider-toggle {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .4s;
+      border-radius: 30px;
+    }
+    .slider-toggle:before {
+      position: absolute;
+      content: "";
+      height: 22px; width: 22px;
+      left: 4px; bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider-toggle { background-color: #22d3ee; }
+    input:checked + .slider-toggle:before { transform: translateX(26px); }
+    
+    .currency-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #334155;
+      color: #facc15;
+    }
+
+    .multiplier-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .multiplier-wrapper label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #94a3b8;
+    }
+    .multiplier-input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f1f5f9;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+    }
+    .multiplier-input:focus {
+      border-color: #facc15;
+      box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+    }
+    .hint-text {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 6px;
+      text-align: center;
+    }
+    
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: #64748b;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- HEADER -->
+    <div class="header">
+      <h1>💰 Ganhar Dinheiro Inteligente</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Renda passiva com cripto</p>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('chainless')">🔥 Chainless</button>
+      <button class="tab-btn" onclick="showTab('picnic')">💳 Picnic</button>
+      <button class="tab-btn" onclick="showTab('okx')">🌎 OKX</button>
+      <button class="tab-btn external" onclick="window.open('https://marcoscleber10.github.io/pool/', '_blank')">🏊 Top Pool</button>
+      <button class="tab-btn" onclick="showTab('dca')">📈 DCA BTC</button>
+      <button class="tab-btn" onclick="showTab('sp500')">📊 S&P 500</button>
+    </div>
+
+    <!-- ABA 1: CHAINLESS -->
+    <div id="chainless" class="tab-content active">
+      <div class="card card-destaque">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <span class="badge-destaque">🏆 MAIOR RENDIMENTO EM REAL</span>
+          <div class="card-title" style="justify-content: center; margin-top: 8px;">💰 Chainless Finance</div>
+          <p style="color: #94a3b8; font-size: 14px;">Rendimento em BRL com saque flexível</p>
+        </div>
+        <div class="app-screen" style="border-color: #facc15;">
+          <div class="app-header">
+            <div><div class="app-title" style="color: #facc15;">Chainless Finance</div><div class="app-subtitle">Pool de Liquidez • Brasil</div></div>
+            <div style="font-size: 28px;">🇧🇷</div>
+          </div>
+          <div class="yield-item destaque" style="margin: 12px 0;">
+            <div class="yield-coin">
+              <div class="yield-icon brl">R$</div>
+              <div><div style="font-weight: 700; color: #f1f5f9;">Real Brasileiro</div><div class="yield-label">Pool BRL/USDC • Taxas + Rewards</div></div>
+            </div>
+            <div style="text-align: right;"><div class="yield-percent">~19%</div><div class="yield-label" style="color: #facc15; font-weight: 700;">a.a. estimado</div></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; padding: 10px; text-align: center;"><div style="font-size: 18px; font-weight: 800; color: #4ade80;">✓</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Saque Flexível</div></div>
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; padding: 10px; text-align: center;"><div style="font-size: 18px; font-weight: 800; color: #4ade80;">✓</div><div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Pix Integrado</div></div>
           </div>
         </div>
-        <div style="text-align: right;">
-          <div class="yield-percent" style="color: #facc15;">${spyPool.apy.toFixed(2)}%</div>
-          <div class="yield-label">APY Atual (API)</div>
+        <div style="background: linear-gradient(135deg, rgba(250, 204, 21, 0.1), rgba(245, 158, 11, 0.05)); border: 1px solid #facc15; border-radius: 12px; padding: 16px; margin: 16px 0;">
+          <div style="font-weight: 700; color: #facc15; margin-bottom: 8px; font-size: 14px;">💡 Por que é o melhor rendimento?</div>
+          <ul class="benefits" style="margin: 0;">
+            <li style="border: none; padding: 6px 0; font-size: 13px;">📈 Ganhe taxas de quem troca cripto</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💰 Rewards adicionais em tokens</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">🔄 Rendimento diário automático</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💸 Saque a qualquer momento</li>
+          </ul>
         </div>
+        <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">🚀 Começar Agora - Código: 17U9R</button>
+        <div class="disclaimer" style="text-align: center;">⚠️ Rendimentos variam conforme o mercado. Não é renda fixa.</div>
       </div>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
-        <div style="background: rgba(34, 211, 238, 0.1); border: 1px solid #22d3ee; border-radius: 8px; padding: 10px; text-align: center;">
-          <div style="font-size: 18px; font-weight: 800; color: #22d3ee;">$${(spyPool.tvlUsd/1000000).toFixed(1)}M</div>
-          <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">TVL</div>
+      <div class="card">
+        <div class="card-title">📊 Comparativo de Rendimentos</div>
+        <div class="comparison">
+          <div class="before"><div class="before-title">🏦 Poupança</div><div class="before-value">~6% a.a.</div><div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Rendimento baixo</div></div>
+          <div class="after"><div class="after-title">🔥 Chainless</div><div class="after-value">~19% a.a.</div><div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">+216% mais que poupança</div></div>
         </div>
-        <div style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; border-radius: 8px; padding: 10px; text-align: center;">
-          <div style="font-size: 18px; font-weight: 800; color: #4ade80;">${spyPool.apyBase ? spyPool.apyBase.toFixed(1) : '0'}%</div>
-          <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Base APY</div>
-        </div>
-      </div>
-      
-      <div style="margin-top: 12px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; border-left: 3px solid #fbbf24;">
-        <div style="font-size: 12px; color: #fbbf24; font-weight: 600;">💡 Yield da Pool</div>
-        <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-          Fees de troca + Rewards em tokens
-        </div>
-      </div>
-      
-      <div style="margin-top: 10px; padding: 8px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid #8b5cf6;">
-        <div style="font-size: 11px; color: #a78bfa; text-align: center;">
-          📊 API mostra: <b>${spyPool.apy.toFixed(1)}%</b> • Você usa: <b id="compareAPY">${customAPY.toFixed(1)}%</b>
-        </div>
-      </div>
-    `;
-    
-  } catch(e) {
-    container.innerHTML = '<div style="text-align:center; padding: 20px; color: #f87171;">Erro ao carregar dados DefiLlama</div>';
-  }
-}
-
-// ===== SPY POOL DCA SIMULATION (atualizada para usar customAPY) =====
-function simulateSPYDCA() {
-  if (!usdBRL) { 
-    alert("Aguarde carregar os dados..."); 
-    return; 
-  }
-  
-  const monthly = parseFloat(document.getElementById("monthlySPY").value);
-  const months = parseInt(document.getElementById("monthsSPY").value);
-  const poolAPY = customAPY / 100; // USA O APY PERSONALIZADO!
-  
-  let totalInvested = monthly * months;
-  let monthlyUSD = monthly / usdBRL;
-  
-  // Simula DCA com yield da pool (composto mensal)
-  let poolValueUSD = 0;
-  const monthlyRate = Math.pow(1 + poolAPY, 1/12) - 1;
-  
-  for (let i = 0; i < months; i++) {
-    poolValueUSD = (poolValueUSD + monthlyUSD) * (1 + monthlyRate);
-  }
-  
-  let poolValueBRL = poolValueUSD * usdBRL;
-  let yieldEarned = poolValueUSD - (monthlyUSD * months);
-  
-  const result = document.getElementById("resultSPY");
-  result.style.display = "block";
-  
-  result.innerHTML = `
-    <div class="highlight-title">📊 Resultado DCA na Pool</div>
-    Investido: <b>R$ ${totalInvested.toLocaleString('pt-BR')}</b><br>
-    Em USD: <b>$ ${(monthlyUSD * months).toFixed(2)}</b><br><br>
-    
-    📈 APY da Pool: <b>${customAPY.toFixed(1)}% a.a.</b> <span style="font-size:11px; color:#94a3b8">(personalizado)</span><br>
-    Yield ganho: <b>$ ${yieldEarned.toFixed(2)}</b><br><br>
-    
-    💰 Valor final:<br>
-    <b>$ ${poolValueUSD.toFixed(2)}</b> / <b>R$ ${poolValueBRL.toFixed(2)}</b>
-  `;
-}
-
-function compareSPYInvestments() {
-  if (!btcBRL || !usdBRL) { 
-    alert("Aguarde carregar os dados..."); 
-    return; 
-  }
-  
-  const monthly = parseFloat(document.getElementById("monthlySPY").value);
-  const months = parseInt(document.getElementById("monthsSPY").value);
-  const poolAPY = customAPY / 100; // USA O APY PERSONALIZADO!
-  const cdiRate = 0.1315; // 13.15% a.a.
-  
-  let totalInvested = monthly * months;
-  let monthlyUSD = monthly / usdBRL;
-  
-  // Pool SPY
-  let poolValueUSD = 0;
-  const monthlyRate = Math.pow(1 + poolAPY, 1/12) - 1;
-  for (let i = 0; i < months; i++) {
-    poolValueUSD = (poolValueUSD + monthlyUSD) * (1 + monthlyRate);
-  }
-  let poolValueBRL = poolValueUSD * usdBRL;
-  
-  // BTC (cenário 2x)
-  let btcAccumulated = (monthly / btcBRL) * months;
-  let btcValueBRL = btcAccumulated * (btcBRL * 2);
-  
-  // CDI
-  let cdiValue = 0;
-  const cdiMonthly = Math.pow(1 + cdiRate, 1/12) - 1;
-  for (let i = 0; i < months; i++) {
-    cdiValue = (cdiValue + monthly) * (1 + cdiMonthly);
-  }
-  
-  document.getElementById("compareSPY").innerHTML = `
-    <div class="comparison">
-      <div class="before">
-        <div class="before-title">📊 Pool SPY</div>
-        <div class="before-value">R$ ${poolValueBRL.toLocaleString('pt-BR')}</div>
-        <div style="font-size:11px; color:#94a3b8">APY: ${customAPY.toFixed(1)}% (você)</div>
-      </div>
-      <div class="before">
-        <div class="before-title">📈 CDI</div>
-        <div class="before-value">R$ ${cdiValue.toLocaleString('pt-BR')}</div>
-        <div style="font-size:11px; color:#94a3b8">13.15% a.a.</div>
-      </div>
-      <div class="after">
-        <div class="after-title">🚀 Bitcoin</div>
-        <div class="after-value">R$ ${btcValueBRL.toLocaleString('pt-BR')}</div>
-        <div style="font-size:11px; color:#94a3b8">Cenário 2x</div>
       </div>
     </div>
-    
-    <div class="highlight">
-      💡 Estratégia Diversificada:<br><br>
-      40% Pool SPY-USDC (${customAPY.toFixed(0)}% a.a.)<br>
-      40% Bitcoin (crescimento)<br>
-      20% CDI/Renda Fixa (proteção)<br><br>
-      <b>Equilíbrio entre risco e retorno!</b>
+
+    <!-- ABA 2: PICNIC -->
+    <div id="picnic" class="tab-content">
+      <div class="card">
+        <div class="card-title">💳 Picnic - Cartão com Cashback</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">Ganhe dinheiro enquanto gasta no dia a dia</p>
+        <div class="app-screen">
+          <div class="app-header">
+            <div><div class="app-title">Picnic Finance</div><div class="app-subtitle">Cartão Internacional • Rewards</div></div>
+            <div style="font-size: 24px;">💳</div>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-card-title">💵 Recompensas em USDG</div>
+            <div class="benefit-value">4%</div>
+            <div class="benefit-desc">APY em stablecoin • Rendimento automático</div>
+          </div>
+          <div class="benefit-card" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.05)); border-color: #22d3ee;">
+            <div class="benefit-card-title" style="color: #22d3ee;">💳 Cashback nas Compras</div>
+            <div class="benefit-value" style="color: #22d3ee;">2%</div>
+            <div class="benefit-desc">Em todas as compras • Sem limite mensal</div>
+          </div>
+          <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid #fbbf24; border-radius: 10px; padding: 12px; margin-top: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="font-size: 24px;">👥</div>
+              <div><div style="font-weight: 700; color: #fbbf24; font-size: 14px;">Indique e ganhe</div><div style="font-size: 12px; color: #94a3b8;">US$ 20 por cadastro aprovado</div></div>
+            </div>
+          </div>
+        </div>
+        <ul class="benefits">
+          <li><b style="color: #4ade80;">4% a.a.</b> em USDG (stablecoin)</li>
+          <li><b style="color: #4ade80;">2% cashback</b> em todas as compras</li>
+          <li><b style="color: #4ade80;">$20</b> por amigo indicado</li>
+          <li>Sem tarifa mensal ou anuidade</li>
+          <li>Funciona em 150+ países</li>
+          <li>Sem IOF em compras internacionais</li>
+        </ul>
+        <div class="comparison">
+          <div class="before"><div class="before-title">❌ Cartão Tradicional</div><div class="before-value">R$ 0</div><div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Sem benefícios</div></div>
+          <div class="after"><div class="after-title">✅ Picnic</div><div class="after-value">+2%</div><div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cashback todo mês</div></div>
+        </div>
+        <button class="btn btn-secondary" onclick="window.location.href='https://app.picnicfinance.com/register?ref=NQLMBK'">🚀 Criar conta grátis</button>
+        <div style="text-align: center; margin-top: 8px; font-size: 13px; color: #94a3b8;">Código: <b style="color: #22d3ee;">NQLMBK</b></div>
+        <div class="disclaimer">💡 Bônus de $10 após gastar $50 nos primeiros 30 dias</div>
+      </div>
     </div>
-  `;
-}
-```
 
-## ✅ O que mudou:
+    <!-- ABA 3: OKX -->
+    <div id="okx" class="tab-content">
+      <div class="card">
+        <div class="card-title">🌎 OKX - Conta Global em Dólar</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">Conta internacional com rendimento em stablecoins</p>
+        <div class="app-screen">
+          <div class="app-header">
+            <div><div class="app-title">OKX Earn</div><div class="app-subtitle">Simple Earn • Stablecoins</div></div>
+            <div style="font-size: 24px;">🟢</div>
+          </div>
+          <div class="yield-list">
+            <div class="yield-item">
+              <div class="yield-coin"><div class="yield-icon usdt">💵</div><div><div>USDT</div><div class="yield-label">Tether • Flexible</div></div></div>
+              <div style="text-align: right;"><div class="yield-percent">10.00%</div><div class="yield-label">APR + Bonus</div></div>
+            </div>
+            <div class="yield-item">
+              <div class="yield-coin"><div class="yield-icon usdc">💠</div><div><div>USDC</div><div class="yield-label">USD Coin • Flexible</div></div></div>
+              <div style="text-align: right;"><div class="yield-percent">10.00%</div><div class="yield-label">APR + Bonus</div></div>
+            </div>
+            <div class="yield-item">
+              <div class="yield-coin"><div class="yield-icon xaut">🥇</div><div><div>XAUT</div><div class="yield-label">Gold Token</div></div></div>
+              <div style="text-align: right;"><div class="yield-percent">13.00%</div><div class="yield-label">APR + Bonus</div></div>
+            </div>
+            <div class="yield-item">
+              <div class="yield-coin"><div class="yield-icon btc">₿</div><div><div>BTC</div><div class="yield-label">Bitcoin</div></div></div>
+              <div style="text-align: right;"><div class="yield-percent">5.00%</div><div class="yield-label">APR + Bonus</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="highlight-title">💡 O que é OKX?</div>
+          <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 8px;">É uma <b>conta global</b> que permite:</p>
+          <ul class="benefits" style="margin: 0;">
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💵 Guardar dólares rendendo 4% a.a.</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💳 Cartão Mastercard internacional</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💱 Comprar BTC, ETH, USDT facilmente</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">🌍 Usar em 150+ países sem IOF</li>
+          </ul>
+        </div>
+        <button class="btn btn-success" onclick="window.location.href='https://okx.com/join/5126561'">👉 Abrir conta OKX grátis</button>
+        <div class="disclaimer">⚠️ Rendimentos variam conforme o mercado. Não é renda fixa.</div>
+      </div>
+    </div>
 
-1. **Campo Editável de APY:**
-   - Input numérico com valor padrão **15%** (média realista)
-   - Step de 0.5% para ajustes finos
-   - Dica visual dos cenários (Fraco 8-12%, Médio 12-18%, Bom 15-25%)
+    <!-- ABA 4: TOP POOL -->
+    <div id="toppool" class="tab-content">
+      <div class="card pool-section">
+        <div class="pool-icon">🏊</div>
+        <div class="pool-title">Top Pools DeFi</div>
+        <div class="pool-desc">Acesse nossa ferramenta exclusiva para encontrar as melhores pools de liquidez com maior rendimento e menor risco</div>
+        <ul class="pool-features">
+          <li>✓ Análise de 50+ pares premium</li>
+          <li>✓ Score visual de risco</li>
+          <li>✓ Estratégias prontas</li>
+          <li>✓ Atualização automática a cada 15 min</li>
+          <li>✓ Setup recomendado para cada perfil</li>
+        </ul>
+        <button class="btn btn-primary" onclick="window.open('https://marcoscleber10.github.io/pool/', '_blank')" style="margin-bottom: 12px;">🚀 Acessar Top Pool Agora</button>
+        <div style="font-size: 12px; color: #64748b; margin-top: 16px;">Abrirá em nova aba</div>
+      </div>
+    </div>
 
-2. **API como Referência:**
-   - Mostra o APY da DefiLlama (7.5% no seu caso)
-   - Mas usa o **SEU** APY personalizado nos cálculos
-   - Comparação visual: "API mostra X% • Você usa Y%"
+    <!-- ABA 5: DCA BITCOIN -->
+    <div id="dca" class="tab-content">
+      <div class="card">
+        <div class="card-title">📊 Simulador DCA em Tempo Real</div>
+        
+        <!-- CONTROLES: CENÁRIO BTC & MOEDA -->
+        <div class="multiplier-wrapper">
+          <label>📈 Cenário BTC (Multiplicador no período)</label>
+          <input id="btcMultiplier" class="multiplier-input" type="number" value="2.0" step="0.1" min="0.01" max="100" oninput="updateCalculations()">
+          <div class="hint-text">Ex: 0.5 (queda), 1 (neutro), 2 (otimista), 5 (explosão)</div>
+        </div>
 
-3. **Cálculos Atualizados:**
-   - Simulação usa `customAPY` em vez do APY da API
-   - Comparação também usa seu valor personalizado
+        <div class="control-row">
+          <span class="control-label">💱 Moeda de visualização</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="currencyLabel" style="font-size:13px; font-weight:600; color:#facc15;">BRL (R$)</span>
+            <label class="switch">
+              <input type="checkbox" id="currencyToggle" onchange="toggleCurrency()">
+              <span class="slider-toggle"></span>
+            </label>
+          </div>
+        </div>
 
-**Agora você pode ajustar para 12%, 15%, 18% ou qualquer valor realista!** 🎯
+        <div class="app-screen">
+          <div class="app-header">
+            <div><div class="app-title">Mercado Agora</div><div class="app-subtitle">Atualização automática</div></div>
+            <div>🌐</div>
+          </div>
+          <div class="yield-list">
+            <div class="yield-item">
+              <div>Bitcoin (BTC)</div>
+              <div id="btcPrice">Carregando...</div>
+            </div>
+            <div class="yield-item">
+              <div>Dólar (USD/BRL)</div>
+              <div id="usdPrice">Carregando...</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <label>💰 Valor mensal</label>
+          <input id="monthly" type="number" value="300" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;" oninput="updateCalculations()">
+        </div>
+        <div style="margin-top: 12px;">
+          <label>📅 Meses</label>
+          <input id="months" type="number" value="12" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;" oninput="updateCalculations()">
+        </div>
+
+        <button class="btn btn-success" onclick="simulateDCA()">🚀 Simular DCA</button>
+        <div class="highlight" id="result" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚖️ BTC vs Poupança vs CDI</div>
+        <label>📊 CDI (% ao ano)</label>
+        <input id="cdiRate" type="number" value="13.15" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9; margin-top:6px;" oninput="updateCalculations()">
+        <button class="btn btn-secondary" onclick="compareInvestments()">📈 Comparar</button>
+        <div id="compareResult" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <!-- ABA 6: S&P 500 (POOL SPY-USDC NA SOLANA) -->
+    <div id="sp500" class="tab-content">
+      <div class="card">
+        <div class="card-title">📊 DCA em Pool SPY-USDC (Solana)</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
+          Invista no S&P 500 via pool de liquidez na Solana com yield em DeFi
+        </p>
+        
+        <!-- DADOS DA POOL -->
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">Pool SPY-USDC</div>
+              <div class="app-subtitle">Solana • Raydium/Orca • DefiLlama API</div>
+            </div>
+            <div style="font-size: 24px;">📈</div>
+          </div>
+          
+          <div id="poolDataContainer">
+            <div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando dados da pool...</div>
+          </div>
+
+          <!-- CAMPO EDITÁVEL DE APY -->
+          <div style="margin-top: 16px; padding: 14px; background: rgba(250, 204, 21, 0.1); border: 2px solid #facc15; border-radius: 12px;">
+            <label style="display: block; font-size: 13px; font-weight: 700; color: #facc15; margin-bottom: 8px;">
+              📝 Ajustar APY Esperado (% a.a.)
+            </label>
+            <input id="customAPY" type="number" value="15" step="0.5" min="1" max="100" 
+                   style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid #facc15; 
+                          background: #0f172a; color: #f1f5f9; font-size: 18px; font-weight: 700; text-align: center;"
+                   onchange="updateAPYFromInput()">
+            <div style="margin-top: 8px; font-size: 11px; color: #94a3b8; text-align: center;">
+              💡 Cenários: Fraco 8-12% • Médio 12-18% • Bom 15-25%
+            </div>
+            <div style="margin-top: 6px; font-size: 11px; color: #facc15; text-align: center;">
+              Usando: <b id="displayAPY">15%</b> a.a. (editável)
+            </div>
+          </div>
+        </div>
+
+        <!-- SIMULADOR DCA -->
+        <div style="margin-top: 16px;">
+          <label>💰 Valor mensal (R$)</label>
+          <input id="monthlySPY" type="number" value="500" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+        <div style="margin-top: 12px;">
+          <label>📅 Meses</label>
+          <input id="monthsSPY" type="number" value="12" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+
+        <button class="btn btn-success" onclick="simulateSPYDCA()">🚀 Simular DCA na Pool</button>
+        <div class="highlight" id="resultSPY" style="display:none;"></div>
+
+        <!-- COMPARAÇÃO -->
+        <div style="margin-top: 20px;">
+          <div class="card-title">⚖️ Pool vs BTC vs CDI</div>
+          <button class="btn btn-secondary" onclick="compareSPYInvestments()">📈 Comparar Estratégias</button>
+          <div id="compareSPY" style="margin-top:16px;"></div>
+        </div>
+
+        <div class="disclaimer">
+          ⚠️ Pools DeFi envolvem risco de impermanent loss. APY varia conforme volume e rewards.
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <p>💡 Dica: Comece pela Chainless (maior rendimento) → depois ative o Picnic (cashback) → depois OKX (dólar)</p>
+      <p style="margin-top: 12px; opacity: 0.6;">
+        Este site é informativo. Criptoativos envolvem riscos.<br>
+        Faça sua própria pesquisa antes de investir.
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== STATE GLOBAL =====
+    let btcMultiplier = 2.0;
+    let displayCurrency = 'BRL';
+    let btcBRL = 0;
+    let usdBRL = 0;
+    let spyPoolData = null;
+    let customAPY = 15; // APY personalizado padrão 15%
+
+    // ===== TAB NAVIGATION =====
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===== ANIMATION ON LOAD =====
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 100 * index);
+      });
+      // Init Fetches
+      fetchBTC(); 
+      fetchUSD(); 
+      fetchSPYPool();
+      setInterval(() => { fetchBTC(); fetchUSD(); fetchSPYPool(); }, 60000);
+    });
+
+    // ===== CURRENCY TOGGLE =====
+    function toggleCurrency() {
+      const toggle = document.getElementById('currencyToggle');
+      displayCurrency = toggle.checked ? 'USD' : 'BRL';
+      document.getElementById('currencyLabel').innerText = displayCurrency === 'USD' ? 'USD ($)' : 'BRL (R$)';
+      updatePricesDisplay();
+    }
+
+    function updatePricesDisplay() {
+      if (!btcBRL || !usdBRL) return;
+      
+      const btcEl = document.getElementById('btcPrice');
+      const usdEl = document.getElementById('usdPrice');
+      
+      if (displayCurrency === 'BRL') {
+        btcEl.innerText = `R$ ${btcBRL.toLocaleString('pt-BR')}`;
+        usdEl.innerText = `R$ ${usdBRL.toFixed(2)}`;
+      } else {
+        btcEl.innerText = `$ ${(btcBRL / usdBRL).toFixed(2)}`;
+        usdEl.innerText = `$ 1.00 (Base)`;
+      }
+    }
+
+    // ===== FUNÇÃO PARA ATUALIZAR APY DO INPUT =====
+    function updateAPYFromInput() {
+      const input = document.getElementById('customAPY');
+      customAPY = parseFloat(input.value) || 15;
+      document.getElementById('displayAPY').innerText = customAPY.toFixed(1) + '%';
+    }
+
+    // ===== API FETCHERS =====
+    async function fetchBTC() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=brl");
+        const data = await res.json();
+        btcBRL = data.bitcoin.brl;
+        updatePricesDisplay();
+      } catch(e) {
+        document.getElementById("btcPrice").innerText = "Erro API";
+      }
+    }
+
+    async function fetchUSD() {
+      try {
+        const res = await fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL");
+        const data = await res.json();
+        usdBRL = parseFloat(data.USDBRL.bid);
+        updatePricesDisplay();
+      } catch(e) {
+        document.getElementById("usdPrice").innerText = "Erro API";
+      }
+    }
+
+    // ===== DEFI LLAMA - SPY-USDC POOL =====
+    async function fetchSPYPool() {
+      const container = document.getElementById('poolDataContainer');
+      container.innerHTML = '<div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando dados da pool...</div>';
+      
+      try {
+        const res = await fetch("https://yields.llama.fi/pools");
+        const data = await res.json();
+        
+        // Filtra pools da Solana com USDC e TVL > $100k
+        const solanaPools = data.data.filter(p => 
+          p.chain === "Solana" && 
+          p.symbol.includes("USDC") &&
+          p.tvlUsd > 100000
+        );
+        
+        // Busca pool com SPY ou similar
+        let spyPool = solanaPools.find(p => 
+          p.symbol.toUpperCase().includes("SPY") || 
+          p.symbol.toUpperCase().includes("SPX")
+        );
+        
+        // Se não achar SPY, usa a pool USDC mais líquida
+        if (!spyPool) {
+          solanaPools.sort((a, b) => b.tvlUsd - a.tvlUsd);
+          spyPool = solanaPools[0];
+        }
+        
+        if (!spyPool) {
+          container.innerHTML = '<div style="text-align:center; padding: 20px; color: #f87171;">Nenhuma pool encontrada</div>';
+          return;
+        }
+        
+        spyPoolData = spyPool;
+        
+        // Renderiza dados da pool
+        container.innerHTML = `
+          <div class="yield-item destaque" style="margin: 12px 0; border-color: #8b5cf6;">
+            <div class="yield-coin">
+              <div class="yield-icon spy">📊</div>
+              <div>
+                <div style="font-weight: 700; color: #f1f5f9;">${spyPool.symbol}</div>
+                <div class="yield-label">${spyPool.project} • Solana</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="yield-percent" style="color: #facc15;">${spyPool.apy.toFixed(2)}%</div>
+              <div class="yield-label">APY Atual (API)</div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+            <div style="background: rgba(34, 211, 238, 0.1); border: 1px solid #22d3ee; border-radius: 8px; padding: 10px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 800; color: #22d3ee;">$${(spyPool.tvlUsd/1000000).toFixed(1)}M</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">TVL</div>
+            </div>
+            <div style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; border-radius: 8px; padding: 10px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 800; color: #4ade80;">${spyPool.apyBase ? spyPool.apyBase.toFixed(1) : '0'}%</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Base APY</div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 12px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; border-left: 3px solid #fbbf24;">
+            <div style="font-size: 12px; color: #fbbf24; font-weight: 600;">💡 Yield da Pool</div>
+            <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+              Fees de troca + Rewards em tokens
+            </div>
+          </div>
+          
+          <div style="margin-top: 10px; padding: 8px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid #8b5cf6;">
+            <div style="font-size: 11px; color: #a78bfa; text-align: center;">
+              📊 API mostra: <b>${spyPool.apy.toFixed(1)}%</b> • Você usa: <b id="compareAPY">${customAPY.toFixed(1)}%</b>
+            </div>
+          </div>
+        `;
+        
+      } catch(e) {
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: #f87171;">Erro ao carregar dados DefiLlama</div>';
+      }
+    }
+
+    // ===== DCA BITCOIN FUNCTIONS =====
+    function simulateDCA() {
+      if (!btcBRL || !usdBRL) { alert("Aguarde carregar os preços..."); return; }
+      
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const months = parseInt(document.getElementById("months").value);
+      
+      let totalInvested = monthly * months;
+      let btcAccumulated = (monthly / btcBRL) * months;
+      
+      let futureBtcPriceBRL = btcBRL * btcMultiplier;
+      let futureValueBRL = btcAccumulated * futureBtcPriceBRL;
+      
+      let displayInvested = totalInvested;
+      let displayFuture = futureValueBRL;
+
+      if (displayCurrency === 'USD') {
+        displayInvested = totalInvested / usdBRL;
+        displayFuture = futureValueBRL / usdBRL;
+      }
+
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      
+      let currencySymbol = displayCurrency === 'USD' ? '$' : 'R$';
+      
+      result.innerHTML = `
+        <div class="highlight-title">📊 Resultado (${displayCurrency})</div>
+        Investido: <b>${currencySymbol} ${displayInvested.toLocaleString('pt-BR')}</b><br>
+        BTC acumulado: <b>${btcAccumulated.toFixed(6)} BTC</b><br><br>
+        🔮 Cenário BTC ${btcMultiplier}x:<br>
+        Valor futuro: <b>${currencySymbol} ${displayFuture.toLocaleString('pt-BR')}</b>
+      `;
+    }
+
+    function compareInvestments() {
+      if (!btcBRL || !usdBRL) { alert("Aguarde carregar os preços..."); return; }
+      
+      const monthly = parseFloat(document.getElementById("monthly").value);
+      const months = parseInt(document.getElementById("months").value);
+      const cdiRate = parseFloat(document.getElementById("cdiRate").value) / 100;
+      
+      let poupanca = 0, cdi = 0;
+      let taxaPoup = 0.06 / 12;
+      let taxaCDI = cdiRate / 12;
+      
+      for (let i = 0; i < months; i++) {
+        poupanca = (poupanca + monthly) * (1 + taxaPoup);
+        cdi = (cdi + monthly) * (1 + taxaCDI);
+      }
+      
+      let btcAccumulated = (monthly / btcBRL) * months;
+      let futureValueBRL = btcAccumulated * (btcBRL * btcMultiplier);
+      
+      let vals = { poupanca, cdi, btc: futureValueBRL };
+      if (displayCurrency === 'USD') {
+        vals.poupanca /= usdBRL;
+        vals.cdi /= usdBRL;
+        vals.btc /= usdBRL;
+      }
+      
+      let sym = displayCurrency === 'USD' ? '$' : 'R$';
+      let fmt = v => v.toLocaleString('pt-BR');
+      
+      document.getElementById("compareResult").innerHTML = `
+        <div class="comparison">
+          <div class="before"><div class="before-title">🏦 Poupança</div><div class="before-value">${sym} ${fmt(vals.poupanca)}</div></div>
+          <div class="before"><div class="before-title">📊 CDI</div><div class="before-value">${sym} ${fmt(vals.cdi)}</div></div>
+          <div class="after"><div class="after-title">🚀 Bitcoin</div><div class="after-value">${sym} ${fmt(vals.btc)}</div></div>
+        </div>
+        <div class="highlight">
+          Investido: <b>${sym} ${fmt((monthly*months)/(displayCurrency==='USD'?usdBRL:1))}</b><br><br>
+          🔥 BTC vs Poupança: <b>+${sym} ${fmt(vals.btc - vals.poupanca)}</b><br>
+          🔥 BTC vs CDI: <b>+${sym} ${fmt(vals.btc - vals.cdi)}</b>
+        </div>
+      `;
+    }
+
+    // ===== SPY POOL DCA SIMULATION =====
+    function simulateSPYDCA() {
+      if (!usdBRL) { 
+        alert("Aguarde carregar os dados..."); 
+        return; 
+      }
+      
+      const monthly = parseFloat(document.getElementById("monthlySPY").value);
+      const months = parseInt(document.getElementById("monthsSPY").value);
+      const poolAPY = customAPY / 100; // USA O APY PERSONALIZADO!
+      
+      let totalInvested = monthly * months;
+      let monthlyUSD = monthly / usdBRL;
+      
+      // Simula DCA com yield da pool (composto mensal)
+      let poolValueUSD = 0;
+      const monthlyRate = Math.pow(1 + poolAPY, 1/12) - 1;
+      
+      for (let i = 0; i < months; i++) {
+        poolValueUSD = (poolValueUSD + monthlyUSD) * (1 + monthlyRate);
+      }
+      
+      let poolValueBRL = poolValueUSD * usdBRL;
+      let yieldEarned = poolValueUSD - (monthlyUSD * months);
+      
+      const result = document.getElementById("resultSPY");
+      result.style.display = "block";
+      
+      result.innerHTML = `
+        <div class="highlight-title">📊 Resultado DCA na Pool</div>
+        Investido: <b>R$ ${totalInvested.toLocaleString('pt-BR')}</b><br>
+        Em USD: <b>$ ${(monthlyUSD * months).toFixed(2)}</b><br><br>
+        
+        📈 APY da Pool: <b>${customAPY.toFixed(1)}% a.a.</b> <span style="font-size:11px; color:#94a3b8">(personalizado)</span><br>
+        Yield ganho: <b>$ ${yieldEarned.toFixed(2)}</b><br><br>
+        
+        💰 Valor final:<br>
+        <b>$ ${poolValueUSD.toFixed(2)}</b> / <b>R$ ${poolValueBRL.toFixed(2)}</b>
+      `;
+    }
+
+    function compareSPYInvestments() {
+      if (!btcBRL || !usdBRL) { 
+        alert("Aguarde carregar os dados..."); 
+        return; 
+      }
+      
+      const monthly = parseFloat(document.getElementById("monthlySPY").value);
+      const months = parseInt(document.getElementById("monthsSPY").value);
+      const poolAPY = customAPY / 100; // USA O APY PERSONALIZADO!
+      const cdiRate = 0.1315; // 13.15% a.a.
+      
+      let totalInvested = monthly * months;
+      let monthlyUSD = monthly / usdBRL;
+      
+      // Pool SPY
+      let poolValueUSD = 0;
+      const monthlyRate = Math.pow(1 + poolAPY, 1/12) - 1;
+      for (let i = 0; i < months; i++) {
+        poolValueUSD = (poolValueUSD + monthlyUSD) * (1 + monthlyRate);
+      }
+      let poolValueBRL = poolValueUSD * usdBRL;
+      
+      // BTC (cenário 2x)
+      let btcAccumulated = (monthly / btcBRL) * months;
+      let btcValueBRL = btcAccumulated * (btcBRL * 2);
+      
+      // CDI
+      let cdiValue = 0;
+      const cdiMonthly = Math.pow(1 + cdiRate, 1/12) - 1;
+      for (let i = 0; i < months; i++) {
+        cdiValue = (cdiValue + monthly) * (1 + cdiMonthly);
+      }
+      
+      document.getElementById("compareSPY").innerHTML = `
+        <div class="comparison">
+          <div class="before">
+            <div class="before-title">📊 Pool SPY</div>
+            <div class="before-value">R$ ${poolValueBRL.toLocaleString('pt-BR')}</div>
+            <div style="font-size:11px; color:#94a3b8">APY: ${customAPY.toFixed(1)}% (você)</div>
+          </div>
+          <div class="before">
+            <div class="before-title">📈 CDI</div>
+            <div class="before-value">R$ ${cdiValue.toLocaleString('pt-BR')}</div>
+            <div style="font-size:11px; color:#94a3b8">13.15% a.a.</div>
+          </div>
+          <div class="after">
+            <div class="after-title">🚀 Bitcoin</div>
+            <div class="after-value">R$ ${btcValueBRL.toLocaleString('pt-BR')}</div>
+            <div style="font-size:11px; color:#94a3b8">Cenário 2x</div>
+          </div>
+        </div>
+        
+        <div class="highlight">
+          💡 Estratégia Diversificada:<br><br>
+          40% Pool SPY-USDC (${customAPY.toFixed(0)}% a.a.)<br>
+          40% Bitcoin (crescimento)<br>
+          20% CDI/Renda Fixa (proteção)<br><br>
+          <b>Equilíbrio entre risco e retorno!</b>
+        </div>
+      `;
+    }
+
+    // INIT
+    updatePricesDisplay();
+  </script>
+</body>
+</html>
