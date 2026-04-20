@@ -206,6 +206,7 @@
     .yield-icon.xaut { background: #fbbf24; color: #0f172a; }
     .yield-icon.btc { background: #f97316; color: white; }
     .yield-icon.brl { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+    .yield-icon.spy { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
     .yield-percent {
       font-weight: 800;
       font-size: 16px;
@@ -773,7 +774,7 @@
       </div>
     </div>
 
-    <!-- ABA 5: DCA BITCOIN (ATUALIZADA COM TOGGLE E MULTIPLICADOR) -->
+    <!-- ABA 5: DCA BITCOIN -->
     <div id="dca" class="tab-content">
       <div class="card">
         <div class="card-title">📊 Simulador DCA em Tempo Real</div>
@@ -835,41 +836,51 @@
       </div>
     </div>
 
-    <!-- ABA 6: S&P 500 (SUBSTITUÍDA POR WIDGET DEFI LLAMA) -->
+    <!-- ABA 6: S&P 500 (POOL SPY-USDC NA SOLANA) -->
     <div id="sp500" class="tab-content">
       <div class="card">
-        <div class="card-title">📊 Top Pools Solana (DeFiLlama)</div>
+        <div class="card-title">📊 DCA em Pool SPY-USDC (Solana)</div>
         <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
-          Rendimentos reais de pools de liquidez na rede Solana
+          Invista no S&P 500 via pool de liquidez na Solana com yield em DeFi
         </p>
         
+        <!-- DADOS DA POOL -->
         <div class="app-screen">
           <div class="app-header">
             <div>
-              <div class="app-title">Live DeFi Data</div>
-              <div class="app-subtitle">Fonte: DefiLlama API • Atualizado</div>
+              <div class="app-title">Pool SPY-USDC</div>
+              <div class="app-subtitle">Solana • Raydium/Orca • DefiLlama API</div>
             </div>
-            <div style="font-size: 24px;">⚡</div>
+            <div style="font-size: 24px;">📈</div>
           </div>
-          <div id="defiPoolsContainer" class="yield-list">
-            <div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando pools...</div>
+          
+          <div id="poolDataContainer">
+            <div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando dados da pool...</div>
           </div>
         </div>
 
-        <div class="highlight">
-          <div class="highlight-title">💡 Como ler os dados?</div>
-          <ul class="benefits" style="margin: 0;">
-            <li style="border: none; padding: 6px 0; font-size: 13px;">📈 APY: Rendimento anual estimado</li>
-            <li style="border: none; padding: 6px 0; font-size: 13px;">💰 TVL: Liquidez total na pool</li>
-            <li style="border: none; padding: 6px 0; font-size: 13px;">🔗 Chain: Rede onde opera (Solana)</li>
-            <li style="border: none; padding: 6px 0; font-size: 13px;">️ Filtro: Apenas pools com >$500k TVL</li>
-          </ul>
+        <!-- SIMULADOR DCA -->
+        <div style="margin-top: 16px;">
+          <label>💰 Valor mensal (R$)</label>
+          <input id="monthlySPY" type="number" value="500" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
+        </div>
+        <div style="margin-top: 12px;">
+          <label>📅 Meses</label>
+          <input id="monthsSPY" type="number" value="12" style="width:100%; padding:12px; border-radius:10px; background:#0f172a; border:1px solid #334155; color:#f1f5f9;">
         </div>
 
-        <button class="btn btn-primary" onclick="fetchDeFiPools()">🔄 Atualizar Dados</button>
-        
+        <button class="btn btn-success" onclick="simulateSPYDCA()">🚀 Simular DCA na Pool</button>
+        <div class="highlight" id="resultSPY" style="display:none;"></div>
+
+        <!-- COMPARAÇÃO -->
+        <div style="margin-top: 20px;">
+          <div class="card-title">⚖️ Pool vs BTC vs CDI</div>
+          <button class="btn btn-secondary" onclick="compareSPYInvestments()">📈 Comparar Estratégias</button>
+          <div id="compareSPY" style="margin-top:16px;"></div>
+        </div>
+
         <div class="disclaimer">
-          ⚠️ APYs variam diariamente. Pools DeFi envolvem risco de impermanent loss.
+          ⚠️ Pools DeFi envolvem risco de impermanent loss. APY varia conforme volume e rewards.
         </div>
       </div>
     </div>
@@ -888,11 +899,10 @@
   <script>
     // ===== STATE GLOBAL =====
     let btcMultiplier = 2.0;
-    let displayCurrency = 'BRL'; // 'BRL' ou 'USD'
+    let displayCurrency = 'BRL';
     let btcBRL = 0;
     let usdBRL = 0;
-    let spyUSD = 0; // Mantido por compatibilidade, não usado na aba DeFi
-    let usdBRL_SP = 0;
+    let spyPoolData = null; // Dados da pool SPY-USDC
 
     // ===== TAB NAVIGATION =====
     function showTab(tabName) {
@@ -916,8 +926,10 @@
         }, 100 * index);
       });
       // Init Fetches
-      fetchBTC(); fetchUSD(); fetchDeFiPools();
-      setInterval(() => { fetchBTC(); fetchUSD(); }, 60000);
+      fetchBTC(); 
+      fetchUSD(); 
+      fetchSPYPool();
+      setInterval(() => { fetchBTC(); fetchUSD(); fetchSPYPool(); }, 60000);
     });
 
     // ===== CURRENCY TOGGLE =====
@@ -926,7 +938,6 @@
       displayCurrency = toggle.checked ? 'USD' : 'BRL';
       document.getElementById('currencyLabel').innerText = displayCurrency === 'USD' ? 'USD ($)' : 'BRL (R$)';
       updatePricesDisplay();
-      updateCalculations();
     }
 
     function updatePricesDisplay() {
@@ -943,12 +954,6 @@
         usdEl.innerText = `$ 1.00 (Base)`;
       }
     }
-
-    // ===== MULTIPLIER HANDLER =====
-    document.getElementById('btcMultiplier').addEventListener('input', (e) => {
-      btcMultiplier = parseFloat(e.target.value) || 1;
-      updateCalculations();
-    });
 
     // ===== API FETCHERS =====
     async function fetchBTC() {
@@ -973,71 +978,83 @@
       }
     }
 
-    // ===== DEFI LLAMA WIDGET =====
-    async function fetchDeFiPools() {
-      const container = document.getElementById('defiPoolsContainer');
-      container.innerHTML = '<div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando pools...</div>';
+    // ===== DEFI LLAMA - SPY-USDC POOL =====
+    async function fetchSPYPool() {
+      const container = document.getElementById('poolDataContainer');
+      container.innerHTML = '<div style="text-align:center; padding: 20px; color: #94a3b8;">Carregando dados da pool...</div>';
       
       try {
         const res = await fetch("https://yields.llama.fi/pools");
         const data = await res.json();
         
-        // Filter: Solana, TVL > 500k, APY > 0
+        // Filtra pools da Solana com USDC e TVL > $100k
         const solanaPools = data.data.filter(p => 
           p.chain === "Solana" && 
-          p.tvlUsd > 500000 && 
-          p.apy > 0
+          p.symbol.includes("USDC") &&
+          p.tvlUsd > 100000
         );
         
-        // Sort by APY desc, take top 4
-        solanaPools.sort((a, b) => b.apy - a.apy);
-        const topPools = solanaPools.slice(0, 4);
+        // Busca pool com SPY ou similar (S&P 500 token)
+        let spyPool = solanaPools.find(p => 
+          p.symbol.toUpperCase().includes("SPY") || 
+          p.symbol.toUpperCase().includes("SPX") ||
+          p.project === "spy"
+        );
         
-        if (topPools.length === 0) {
+        // Se não achar SPY, usa a pool USDC mais líquida como fallback
+        if (!spyPool) {
+          solanaPools.sort((a, b) => b.tvlUsd - a.tvlUsd);
+          spyPool = solanaPools[0];
+        }
+        
+        if (!spyPool) {
           container.innerHTML = '<div style="text-align:center; padding: 20px; color: #f87171;">Nenhuma pool encontrada</div>';
           return;
         }
-
-        let html = '';
-        topPools.forEach(pool => {
-          html += `
-            <div class="yield-item" style="cursor: pointer;" onclick="window.open('https://defillama.com/yields/pool/${pool.pool}', '_blank')">
-              <div class="yield-coin">
-                <div class="yield-icon" style="background:#f97316; color:white;">⚡</div>
-                <div>
-                  <div style="font-weight:700; color:#f1f5f9;">${pool.symbol}</div>
-                  <div class="yield-label">${pool.project} • Solana</div>
-                </div>
-              </div>
-              <div style="text-align:right">
-                <div class="yield-percent">${pool.apy.toFixed(2)}%</div>
-                <div class="yield-label">TVL: $${(pool.tvlUsd/1000000).toFixed(1)}M</div>
+        
+        spyPoolData = spyPool;
+        
+        // Renderiza dados da pool
+        container.innerHTML = `
+          <div class="yield-item destaque" style="margin: 12px 0;">
+            <div class="yield-coin">
+              <div class="yield-icon spy">📊</div>
+              <div>
+                <div style="font-weight: 700; color: #f1f5f9;">${spyPool.symbol}</div>
+                <div class="yield-label">${spyPool.project} • Solana</div>
               </div>
             </div>
-          `;
-        });
-        
-        container.innerHTML = html;
+            <div style="text-align: right;">
+              <div class="yield-percent">${spyPool.apy.toFixed(2)}%</div>
+              <div class="yield-label">APY</div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+            <div style="background: rgba(34, 211, 238, 0.1); border: 1px solid #22d3ee; border-radius: 8px; padding: 10px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 800; color: #22d3ee;">$${(spyPool.tvlUsd/1000000).toFixed(1)}M</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">TVL</div>
+            </div>
+            <div style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80; border-radius: 8px; padding: 10px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 800; color: #4ade80;">${spyPool.apyBase ? spyPool.apyBase.toFixed(1) : '0'}%</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Base APY</div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 12px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; border-left: 3px solid #fbbf24;">
+            <div style="font-size: 12px; color: #fbbf24; font-weight: 600;">💡 Yield da Pool</div>
+            <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+              Fees de troca + Rewards em tokens
+            </div>
+          </div>
+        `;
         
       } catch(e) {
         container.innerHTML = '<div style="text-align:center; padding: 20px; color: #f87171;">Erro ao carregar dados DefiLlama</div>';
       }
     }
 
-    // ===== DCA SIMULATION LOGIC =====
-    function formatMoney(value) {
-      if (displayCurrency === 'USD') {
-        return `$ ${value.toLocaleString('pt-BR')}`;
-      }
-      return `R$ ${value.toLocaleString('pt-BR')}`;
-    }
-
-    function updateCalculations() {
-      // Auto-update if inputs change, but keep explicit button for heavy calcs if needed
-      // For UX, we'll just wait for button click or debounce in real app. 
-      // Here we keep it simple.
-    }
-
+    // ===== DCA BITCOIN FUNCTIONS =====
     function simulateDCA() {
       if (!btcBRL || !usdBRL) { alert("Aguarde carregar os preços..."); return; }
       
@@ -1045,19 +1062,17 @@
       const months = parseInt(document.getElementById("months").value);
       
       let totalInvested = monthly * months;
-      let btcAccumulated = (monthly / btcBRL) * months; // Simplified DCA
+      let btcAccumulated = (monthly / btcBRL) * months;
       
       let futureBtcPriceBRL = btcBRL * btcMultiplier;
       let futureValueBRL = btcAccumulated * futureBtcPriceBRL;
       
       let displayInvested = totalInvested;
       let displayFuture = futureValueBRL;
-      let displayBtcAcc = btcAccumulated;
 
       if (displayCurrency === 'USD') {
         displayInvested = totalInvested / usdBRL;
         displayFuture = futureValueBRL / usdBRL;
-        // BTC amount stays in BTC, but we can show USD equivalent
       }
 
       const result = document.getElementById("result");
@@ -1070,8 +1085,7 @@
         Investido: <b>${currencySymbol} ${displayInvested.toLocaleString('pt-BR')}</b><br>
         BTC acumulado: <b>${btcAccumulated.toFixed(6)} BTC</b><br><br>
         🔮 Cenário BTC ${btcMultiplier}x:<br>
-        Valor futuro: <b>${currencySymbol} ${displayFuture.toLocaleString('pt-BR')}</b><br>
-        ${displayCurrency === 'USD' ? `Em BRL: <b>R$ ${futureValueBRL.toLocaleString('pt-BR')}</b>` : `Em USD: <b>$ ${(futureValueBRL/usdBRL).toFixed(2)}</b>`}
+        Valor futuro: <b>${currencySymbol} ${displayFuture.toLocaleString('pt-BR')}</b>
       `;
     }
 
@@ -1111,12 +1125,112 @@
           <div class="after"><div class="after-title">🚀 Bitcoin</div><div class="after-value">${sym} ${fmt(vals.btc)}</div></div>
         </div>
         <div class="highlight">
-          Investido: <b>${sym} ${fmt(vals.poupanca > 0 ? (monthly*months)/(displayCurrency==='USD'?usdBRL:1) : 0)}</b><br><br>
-          🏦 Poupança: ${sym} ${fmt(vals.poupanca)}<br>
-          📊 CDI: ${sym} ${fmt(vals.cdi)}<br>
-          🚀 BTC: ${sym} ${fmt(vals.btc)}<br><br>
+          Investido: <b>${sym} ${fmt((monthly*months)/(displayCurrency==='USD'?usdBRL:1))}</b><br><br>
           🔥 BTC vs Poupança: <b>+${sym} ${fmt(vals.btc - vals.poupanca)}</b><br>
           🔥 BTC vs CDI: <b>+${sym} ${fmt(vals.btc - vals.cdi)}</b>
+        </div>
+      `;
+    }
+
+    // ===== SPY POOL DCA SIMULATION =====
+    function simulateSPYDCA() {
+      if (!spyPoolData || !usdBRL) { 
+        alert("Aguarde carregar os dados da pool..."); 
+        return; 
+      }
+      
+      const monthly = parseFloat(document.getElementById("monthlySPY").value);
+      const months = parseInt(document.getElementById("monthsSPY").value);
+      const poolAPY = spyPoolData.apy / 100;
+      
+      let totalInvested = monthly * months;
+      let monthlyUSD = monthly / usdBRL;
+      
+      // Simula DCA com yield da pool (composto mensal)
+      let poolValueUSD = 0;
+      const monthlyRate = Math.pow(1 + poolAPY, 1/12) - 1;
+      
+      for (let i = 0; i < months; i++) {
+        poolValueUSD = (poolValueUSD + monthlyUSD) * (1 + monthlyRate);
+      }
+      
+      let poolValueBRL = poolValueUSD * usdBRL;
+      let yieldEarned = poolValueUSD - (monthlyUSD * months);
+      
+      const result = document.getElementById("resultSPY");
+      result.style.display = "block";
+      
+      result.innerHTML = `
+        <div class="highlight-title">📊 Resultado DCA na Pool</div>
+        Investido: <b>R$ ${totalInvested.toLocaleString('pt-BR')}</b><br>
+        Em USD: <b>$ ${(monthlyUSD * months).toFixed(2)}</b><br><br>
+        
+        📈 APY da Pool: <b>${poolAPY.toFixed(2)}% a.a.</b><br>
+        Yield ganho: <b>$ ${yieldEarned.toFixed(2)}</b><br><br>
+        
+        💰 Valor final:<br>
+        <b>$ ${poolValueUSD.toFixed(2)}</b> / <b>R$ ${poolValueBRL.toFixed(2)}</b>
+      `;
+    }
+
+    function compareSPYInvestments() {
+      if (!spyPoolData || !btcBRL || !usdBRL) { 
+        alert("Aguarde carregar os dados..."); 
+        return; 
+      }
+      
+      const monthly = parseFloat(document.getElementById("monthlySPY").value);
+      const months = parseInt(document.getElementById("monthsSPY").value);
+      const poolAPY = spyPoolData.apy / 100;
+      const cdiRate = 0.1315; // 13.15% a.a.
+      
+      let totalInvested = monthly * months;
+      let monthlyUSD = monthly / usdBRL;
+      
+      // Pool SPY
+      let poolValueUSD = 0;
+      const monthlyRate = Math.pow(1 + poolAPY, 1/12) - 1;
+      for (let i = 0; i < months; i++) {
+        poolValueUSD = (poolValueUSD + monthlyUSD) * (1 + monthlyRate);
+      }
+      let poolValueBRL = poolValueUSD * usdBRL;
+      
+      // BTC (cenário 2x)
+      let btcAccumulated = (monthly / btcBRL) * months;
+      let btcValueBRL = btcAccumulated * (btcBRL * 2);
+      
+      // CDI
+      let cdiValue = 0;
+      const cdiMonthly = Math.pow(1 + cdiRate, 1/12) - 1;
+      for (let i = 0; i < months; i++) {
+        cdiValue = (cdiValue + monthly) * (1 + cdiMonthly);
+      }
+      
+      document.getElementById("compareSPY").innerHTML = `
+        <div class="comparison">
+          <div class="before">
+            <div class="before-title">📊 Pool SPY</div>
+            <div class="before-value">R$ ${poolValueBRL.toLocaleString('pt-BR')}</div>
+            <div style="font-size:11px; color:#94a3b8">APY: ${poolAPY.toFixed(1)}%</div>
+          </div>
+          <div class="before">
+            <div class="before-title">📈 CDI</div>
+            <div class="before-value">R$ ${cdiValue.toLocaleString('pt-BR')}</div>
+            <div style="font-size:11px; color:#94a3b8">13.15% a.a.</div>
+          </div>
+          <div class="after">
+            <div class="after-title">🚀 Bitcoin</div>
+            <div class="after-value">R$ ${btcValueBRL.toLocaleString('pt-BR')}</div>
+            <div style="font-size:11px; color:#94a3b8">Cenário 2x</div>
+          </div>
+        </div>
+        
+        <div class="highlight">
+          💡 Estratégia Diversificada:<br><br>
+          40% Pool SPY-USDC (rendimento estável)<br>
+          40% Bitcoin (crescimento)<br>
+          20% CDI/Renda Fixa (proteção)<br><br>
+          <b>Equilíbrio entre risco e retorno!</b>
         </div>
       `;
     }
