@@ -94,53 +94,180 @@
       gap: 8px;
     }
     
-    /* SCREENSHOT CONTAINER */
-    .screenshot {
-      background: #000;
+    /* APP SCREENSHOT REPRESENTATION */
+    .app-screen {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
       border-radius: 16px;
-      padding: 12px;
+      padding: 16px;
       margin: 16px 0;
-      border: 3px solid #334155;
+      border: 2px solid #334155;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #334155;
+    }
+    .app-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .app-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    
+    /* YIELD ITEMS */
+    .yield-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .yield-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.8);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+    }
+    .yield-coin {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .yield-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .yield-icon.usdt { background: #22d3ee; color: #0f172a; }
+    .yield-icon.usdc { background: #3b82f6; color: white; }
+    .yield-icon.xaut { background: #fbbf24; color: #0f172a; }
+    .yield-icon.btc { background: #f97316; color: white; }
+    .yield-icon.brl { background: #22c55e; color: white; }
+    .yield-percent {
+      font-weight: 800;
+      font-size: 15px;
+      color: #4ade80;
+    }
+    .yield-label {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    
+    /* BENEFIT CARDS */
+    .benefit-card {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+      border: 1px solid #22c55e;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+    .benefit-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .benefit-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #4ade80;
+      line-height: 1;
+    }
+    .benefit-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+    
+    /* CARD REPRESENTATION */
+    .card-visual {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      border: 1px solid #404040;
       position: relative;
       overflow: hidden;
     }
-    .screenshot::before {
+    .card-visual::before {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 24px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.1), transparent);
-      border-radius: 13px 13px 0 0;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
       pointer-events: none;
     }
-    .screenshot img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      display: block;
+    .card-chip {
+      width: 40px;
+      height: 28px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .card-number {
+      font-family: monospace;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+    .card-rewards {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .card-reward-item {
+      background: rgba(74, 222, 128, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .card-reward-value {
+      color: #4ade80;
+      font-weight: 700;
     }
     
-    /* PLACEHOLDER IMAGE */
-    .img-placeholder {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border-radius: 8px;
-      padding: 60px 20px;
-      text-align: center;
-      border: 2px dashed #475569;
-      position: relative;
+    /* BADGES */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
     }
-    .img-placeholder-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      opacity: 0.5;
+    .badge {
+      background: #334155;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .img-placeholder-text {
-      color: #64748b;
-      font-size: 13px;
-      font-weight: 500;
+    .badge-percent {
+      color: #4ade80;
+      font-weight: 700;
     }
     
     /* BENEFITS LIST */
@@ -295,28 +422,6 @@
       border-left: 3px solid #f87171;
     }
     
-    /* PERCENTAGE BADGES */
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 12px 0;
-    }
-    .badge {
-      background: #334155;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .badge-percent {
-      color: #4ade80;
-      font-weight: 700;
-    }
-    
     /* FOOTER */
     .footer {
       text-align: center;
@@ -357,14 +462,73 @@
           Veja quanto seu dinheiro pode render enquanto dorme
         </p>
         
-        <!-- IMAGEM OKX - Substitua src pela sua imagem -->
-        <div class="screenshot">
-          <div class="img-placeholder">
-            <div class="img-placeholder-icon">📊</div>
-            <div class="img-placeholder-text">Imagem OKX Earn</div>
+        <!-- REPRESENTAÇÃO OKX EARN -->
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">OKX Earn</div>
+              <div class="app-subtitle">Simple Earn • Rendimentos</div>
+            </div>
+            <div style="font-size: 24px;">🟢</div>
           </div>
-          <!-- Quando tiver a imagem real, use: -->
-          <!-- <img src="okx-earn.jpg" alt="OKX Earn - Rendimentos"> -->
+          
+          <div class="yield-list">
+            <div class="yield-item">
+              <div class="yield-coin">
+                <div class="yield-icon usdt">💵</div>
+                <div>
+                  <div>USDT</div>
+                  <div class="yield-label">Flexible</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="yield-percent">10.00%</div>
+                <div class="yield-label">APR + Bonus</div>
+              </div>
+            </div>
+            
+            <div class="yield-item">
+              <div class="yield-coin">
+                <div class="yield-icon usdc">💠</div>
+                <div>
+                  <div>USDC</div>
+                  <div class="yield-label">Flexible</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="yield-percent">10.00%</div>
+                <div class="yield-label">APR + Bonus</div>
+              </div>
+            </div>
+            
+            <div class="yield-item">
+              <div class="yield-coin">
+                <div class="yield-icon xaut"></div>
+                <div>
+                  <div>XAUT</div>
+                  <div class="yield-label">Gold Token</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="yield-percent">13.00%</div>
+                <div class="yield-label">APR + Bonus</div>
+              </div>
+            </div>
+            
+            <div class="yield-item">
+              <div class="yield-coin">
+                <div class="yield-icon btc">₿</div>
+                <div>
+                  <div>BTC</div>
+                  <div class="yield-label">Bitcoin</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div class="yield-percent">5.00%</div>
+                <div class="yield-label">APR + Bonus</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="highlight">
@@ -393,17 +557,41 @@
         </div>
       </div>
 
-      <!-- IMAGEM CHAINLESS - Substitua src pela sua imagem -->
+      <!-- REPRESENTAÇÃO CHAINLESS -->
       <div class="card">
         <div class="card-title">💰 Rendimento em Real (BRL)</div>
-        <div class="screenshot">
-          <div class="img-placeholder">
-            <div class="img-placeholder-icon">🇧🇷</div>
-            <div class="img-placeholder-text">Imagem Chainless</div>
+        
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">Chainless Finance</div>
+              <div class="app-subtitle">Pool de Liquidez • BRL</div>
+            </div>
+            <div style="font-size: 24px;">🇧🇷</div>
           </div>
-          <!-- Quando tiver a imagem real, use: -->
-          <!-- <img src="chainless.jpg" alt="Chainless Finance"> -->
+          
+          <div class="yield-item" style="margin: 12px 0;">
+            <div class="yield-coin">
+              <div class="yield-icon brl">R$</div>
+              <div>
+                <div>Real Brasileiro</div>
+                <div class="yield-label">Pool BRL/USDC</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="yield-percent">~19%</div>
+              <div class="yield-label">a.a. estimado</div>
+            </div>
+          </div>
+          
+          <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; padding: 10px; margin-top: 12px;">
+            <div style="font-size: 12px; color: #4ade80; font-weight: 600; margin-bottom: 4px;">✨ Benefícios</div>
+            <div style="font-size: 11px; color: #94a3b8;">✓ Saque flexível</div>
+            <div style="font-size: 11px; color: #94a3b8;">✓ Sem taxa de depósito</div>
+            <div style="font-size: 11px; color: #94a3b8;">✓ Pix integrado</div>
+          </div>
         </div>
+
         <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">
           🚀 Começar na Chainless
         </button>
@@ -423,14 +611,37 @@
           Cartão internacional com cashback e rendimento
         </p>
 
-        <!-- IMAGEM BENEFÍCIOS - Substitua src pela sua imagem -->
-        <div class="screenshot">
-          <div class="img-placeholder">
-            <div class="img-placeholder-icon">💳</div>
-            <div class="img-placeholder-text">Imagem Benefícios</div>
+        <!-- REPRESENTAÇÃO BENEFÍCIOS -->
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">Benefícios</div>
+              <div class="app-subtitle">Picnic Finance • Rewards</div>
+            </div>
+            <div style="font-size: 24px;">💳</div>
           </div>
-          <!-- Quando tiver a imagem real, use: -->
-          <!-- <img src="beneficios.jpg" alt="Benefícios do Cartão"> -->
+          
+          <div class="benefit-card">
+            <div class="benefit-card-title">💵 Recompensas em USDG</div>
+            <div class="benefit-value">4%</div>
+            <div class="benefit-desc">APY em stablecoin • Rendimento automático</div>
+          </div>
+          
+          <div class="benefit-card" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.05)); border-color: #22d3ee;">
+            <div class="benefit-card-title" style="color: #22d3ee;">💳 Recompensas do Cartão</div>
+            <div class="benefit-value" style="color: #22d3ee;">2%</div>
+            <div class="benefit-desc">Cashback em todas as compras • Sem limite</div>
+          </div>
+          
+          <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid #fbbf24; border-radius: 10px; padding: 12px; margin-top: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="font-size: 24px;">👥</div>
+              <div>
+                <div style="font-weight: 700; color: #fbbf24; font-size: 14px;">Indique e ganhe</div>
+                <div style="font-size: 12px; color: #94a3b8;">US$ 20 por cadastro</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <ul class="benefits">
@@ -469,6 +680,33 @@
 
       <div class="card">
         <div class="card-title">🌎 Conta Global Completa</div>
+        
+        <div class="card-visual">
+          <div class="card-chip"></div>
+          <div class="card-number">•••• •••• •••• 8842</div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+              <div style="font-size: 11px; color: #94a3b8;">CARDHOLDER</div>
+              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">YOUR NAME</div>
+            </div>
+            <div style="font-size: 20px; font-weight: 800; color: #fbbf24;">mastercard</div>
+          </div>
+          <div class="card-rewards">
+            <div class="card-reward-item">
+              <div class="card-reward-value">4%</div>
+              <div style="font-size: 10px; color: #94a3b8;">Yield</div>
+            </div>
+            <div class="card-reward-item">
+              <div class="card-reward-value">2%</div>
+              <div style="font-size: 10px; color: #94a3b8;">Cashback</div>
+            </div>
+            <div class="card-reward-item">
+              <div class="card-reward-value">$0</div>
+              <div style="font-size: 10px; color: #94a3b8;">Anuidade</div>
+            </div>
+          </div>
+        </div>
+
         <ul class="benefits">
           <li>Dólar rendendo 4% a.a.</li>
           <li>Cartão Mastercard internacional</li>
