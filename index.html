@@ -17,9 +17,12 @@
       max-width: 480px;
       margin: 0 auto;
     }
+    
+    /* HEADER */
     .header {
       text-align: center;
-      padding: 24px 0 16px;
+      padding: 20px 0;
+      margin-bottom: 20px;
     }
     .header h1 {
       font-size: 24px;
@@ -27,12 +30,128 @@
       background: linear-gradient(135deg, #facc15, #22d3ee);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
     }
-    .header p {
+    
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: #1e293b;
+      padding: 6px;
+      border-radius: 16px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
       color: #94a3b8;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+    }
+    
+    /* TAB CONTENT */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💰 Ganhar Dinheiro Inteligente</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      line-height: 1.5;
+      padding: 16px;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #facc15, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: #1e293b;
+      padding: 6px;
+      border-radius: 16px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+    }
+    
+    /* TAB CONTENT */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* CARDS */
     .card {
       background: linear-gradient(145deg, #1e293b, #1a2332);
       border: 1px solid #334155;
@@ -40,38 +159,55 @@
       padding: 20px;
       margin-bottom: 16px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      transition: transform 0.2s;
     }
-    .card:active { transform: scale(0.99); }
     .card-title {
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .card-subtitle {
-      color: #94a3b8;
-      font-size: 14px;
-      margin-bottom: 12px;
+    
+    /* IMAGE PLACEHOLDER */
+    .screenshot {
+      background: #0f172a;
+      border: 2px dashed #334155;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      margin: 16px 0;
+      color: #64748b;
     }
+    .screenshot img {
+      max-width: 100%;
+      border-radius: 12px;
+      display: block;
+      margin: 0 auto;
+    }
+    
+    /* BENEFITS LIST */
     .benefits {
       list-style: none;
       margin: 12px 0;
     }
     .benefits li {
-      padding: 6px 0;
+      padding: 10px 0;
       font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      border-bottom: 1px solid #334155;
     }
+    .benefits li:last-child { border-bottom: none; }
     .benefits li::before {
       content: "✓";
       color: #4ade80;
       font-weight: bold;
+      font-size: 16px;
     }
+    
+    /* BUTTONS */
     .btn {
       width: 100%;
       padding: 16px;
@@ -87,7 +223,7 @@
       gap: 8px;
       text-decoration: none;
       color: #0f172a;
-      transition: filter 0.2s;
+      transition: all 0.2s;
     }
     .btn-primary {
       background: linear-gradient(135deg, #facc15, #f59e0b);
@@ -101,103 +237,127 @@
       background: linear-gradient(135deg, #4ade80, #22c55e);
       box-shadow: 0 4px 14px rgba(74, 222, 128, 0.3);
     }
-    .btn:hover { filter: brightness(1.05); }
-    .code {
-      background: #334155;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-weight: 700;
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    
+    /* STEPS */
+    .steps { margin: 16px 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      background: #0f172a;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 4px solid #22d3ee;
+    }
+    .step-number {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #0f172a;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .step-text {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    
+    /* BEFORE/AFTER */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .before, .after {
+      padding: 16px;
+      border-radius: 12px;
       text-align: center;
-      margin: 8px 0;
+    }
+    .before {
+      background: rgba(248, 113, 113, 0.1);
+      border: 2px solid #f87171;
+    }
+    .after {
+      background: rgba(74, 222, 128, 0.1);
+      border: 2px solid #4ade80;
+    }
+    .before-title, .after-title {
+      font-weight: 700;
+      margin-bottom: 8px;
       font-size: 14px;
     }
+    .before-title { color: #f87171; }
+    .after-title { color: #4ade80; }
+    .before-value, .after-value {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .before-value { color: #f87171; }
+    .after-value { color: #4ade80; }
+    
+    /* HIGHLIGHT BOX */
+    .highlight {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(6, 182, 212, 0.1));
+      border: 1px solid #22d3ee;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .highlight-title {
+      color: #22d3ee;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    /* DISCLAIMER */
     .disclaimer {
       font-size: 12px;
       color: #fbbf24;
       background: rgba(251, 191, 36, 0.1);
-      padding: 8px 12px;
+      padding: 10px 12px;
       border-radius: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
       border-left: 3px solid #fbbf24;
     }
     .warning {
       font-size: 12px;
       color: #f87171;
       background: rgba(248, 113, 113, 0.1);
-      padding: 8px 12px;
+      padding: 10px 12px;
       border-radius: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
       border-left: 3px solid #f87171;
     }
-    .input-group { margin: 12px 0; }
-    .input-group label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: #94a3b8;
-    }
-    .input-group input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: white;
-      font-size: 16px;
-      outline: none;
-    }
-    .input-group input:focus {
-      border-color: #22d3ee;
-      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
-    }
-    .result {
-      font-size: 20px;
-      font-weight: 700;
-      color: #4ade80;
-      text-align: center;
-      margin: 16px 0;
-      padding: 12px;
-      background: rgba(74, 222, 128, 0.1);
-      border-radius: 10px;
-    }
-    .steps { margin: 12px 0; }
-    .step {
+    
+    /* PERCENTAGE BADGES */
+    .badge-row {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 10px 0;
-      font-size: 14px;
-      border-bottom: 1px dashed #334155;
-    }
-    .step:last-child { border-bottom: none; }
-    .step-number {
-      background: #22d3ee;
-      color: #0f172a;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-    .footer {
-      text-align: center;
-      padding: 20px;
-      color: #64748b;
-      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
     }
     .badge {
-      display: inline-block;
       background: #334155;
-      padding: 4px 10px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      margin: 4px 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-percent {
+      color: #4ade80;
+      font-weight: 700;
     }
   </style>
 </head>
@@ -206,118 +366,277 @@
     
     <!-- HEADER -->
     <div class="header">
-      <h1>💰 Ganhar Dinheiro</h1>
-      <p>Renda inteligente com cripto, cashback e dólar</p>
+      <h1>💰 Ganhar Dinheiro Inteligente</h1>
+      <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Renda passiva com cripto</p>
     </div>
 
-    <!-- CARD 1: PICNIC (GANHO FÁCIL - ENTRADA) -->
-    <div class="card">
-      <div class="card-title">💳 Ganhe $10 com o cartão</div>
-      <div class="card-subtitle">Gaste $50 e receba bônus imediato</div>
-      <ul class="benefits">
-        <li>Sem tarifas mensais</li>
-        <li>Dólar mais barato</li>
-        <li>Uso global em 150+ países</li>
-        <li>Cashback em compras</li>
-      </ul>
-      <button class="btn btn-primary" onclick="window.location.href='https://app.picnicfinance.com/register?ref=NQLMBK'">
-        👉 Ativar benefício
+    <!-- TABS NAVIGATION -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('rendimentos')">
+        📊 Rendimentos
       </button>
-      <div class="code">Código: <b>NQLMBK</b></div>
-      <div class="disclaimer">💡 Bônus válido após cumprir requisitos de gasto</div>
-    </div>
-
-    <!-- CARD 2: OKX (CONTA GLOBAL + UTILIDADE) -->
-    <div class="card">
-      <div class="card-title">🌎 Dólar rendendo + cartão internacional</div>
-      <div class="card-subtitle">Conta global com yield e zero burocracia</div>
-      <ul class="benefits">
-        <li>Rendimento: até 4% a.a. em USDG</li>
-        <li>Cashback: até 2% no cartão</li>
-        <li>Sem IOF em compras internacionais</li>
-        <li>Zero spread na conversão</li>
-      </ul>
-      <button class="btn btn-secondary" onclick="window.location.href='https://okx.com/join/5126561'">
-        🚀 Criar conta grátis
+      <button class="tab-btn" onclick="showTab('beneficios')">
+        💳 Benefícios
       </button>
-      <div class="badges">
-        <span class="badge">BTC</span>
-        <span class="badge">ETH</span>
-        <span class="badge">USDT</span>
-        <span class="badge">BRL</span>
-      </div>
-      <div class="disclaimer">💡 Benefícios podem variar conforme região e uso</div>
+      <button class="tab-btn" onclick="showTab('como')">
+        🧠 Como funciona
+      </button>
     </div>
 
-    <!-- CARD 3: CHAINLESS (RENDIMENTO AVANÇADO) -->
-    <div class="card">
-      <div class="card-title">💰 Rendimento em Real (BRL)</div>
-      <div class="card-subtitle">~19% a.a. • Saque flexível • Via pool de liquidez</div>
+    <!-- ABA 1: RENDIMENTOS -->
+    <div id="rendimentos" class="tab-content active">
       
-      <div class="input-group">
-        <label>Simule seu rendimento:</label>
-        <input type="number" id="valor" placeholder="Ex: 1000">
-      </div>
-      <button class="btn btn-success" onclick="calcular()">Calcular ganhos</button>
-      <div class="result" id="resultado"></div>
-      <div id="detalhes" style="font-size:14px; color:#94a3b8; text-align:center;"></div>
+      <div class="card">
+        <div class="card-title">📈 Resultados reais de rendimento</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
+          Veja quanto seu dinheiro pode render enquanto dorme
+        </p>
+        
+        <!-- PLACEHOLDER PARA PRINT OKX -->
+        <div class="screenshot">
+          <div style="font-size: 48px; margin-bottom: 8px;">📊</div>
+          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Print OKX Earn</div>
+          <div style="font-size: 12px;">USDT 10% • USDC 10% • XAUT 13%</div>
+          <!-- Substitua por: <img src="caminho-do-print-okx.jpg" alt="OKX Earn"> -->
+        </div>
 
-      <div class="steps">
-        <div class="step"><div class="step-number">1</div>Baixe o app Chainless</div>
-        <div class="step"><div class="step-number">2</div>Deposite via Pix</div>
-        <div class="step"><div class="step-number">3</div>Ative "Adicionar liquidez"</div>
+        <div class="highlight">
+          <div class="highlight-title">💡 Como funciona esse rendimento?</div>
+          <ul class="benefits" style="margin: 0;">
+            <li style="border: none; padding: 6px 0;">📈 Vem de pools de liquidez</li>
+            <li style="border: none; padding: 6px 0;">💰 Você ganha taxas de quem faz trocas</li>
+            <li style="border: none; padding: 6px 0;">🔄 O valor varia diariamente</li>
+            <li style="border: none; padding: 6px 0;">💸 Saque flexível a qualquer momento</li>
+          </ul>
+        </div>
+
+        <div class="badge-row">
+          <div class="badge">USDT <span class="badge-percent">10%</span></div>
+          <div class="badge">USDC <span class="badge-percent">10%</span></div>
+          <div class="badge">XAUT <span class="badge-percent">13%</span></div>
+          <div class="badge">BTC <span class="badge-percent">5%</span></div>
+        </div>
+
+        <button class="btn btn-success" onclick="window.location.href='https://okx.com/join/5126561'">
+          👉 Quero fazer igual
+        </button>
+        
+        <div class="disclaimer">
+          ⚠️ Rendimentos variam conforme o mercado. Não é renda fixa.
+        </div>
       </div>
 
-      <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">
-        👉 Começar agora
+      <!-- PLACEHOLDER PARA PRINT CHAINLESS -->
+      <div class="card">
+        <div class="card-title">💰 Rendimento em Real (BRL)</div>
+        <div class="screenshot">
+          <div style="font-size: 48px; margin-bottom: 8px;">🇷</div>
+          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Print Chainless</div>
+          <div style="font-size: 12px;">~19% a.a. em BRL</div>
+          <!-- Substitua por: <img src="chainless-print.jpg" alt="Chainless"> -->
+        </div>
+        <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">
+          🚀 Começar na Chainless
+        </button>
+        <div style="text-align: center; margin-top: 8px; font-size: 13px; color: #94a3b8;">
+          Código: <b style="color: #facc15;">17U9R</b>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ABA 2: BENEFÍCIOS -->
+    <div id="beneficios" class="tab-content">
+      
+      <div class="card">
+        <div class="card-title">💳 Ganhe enquanto gasta</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
+          Cartão internacional com cashback e rendimento
+        </p>
+
+        <!-- PLACEHOLDER PARA PRINT BENEFÍCIOS -->
+        <div class="screenshot">
+          <div style="font-size: 48px; margin-bottom: 8px;">💳</div>
+          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Print Benefícios</div>
+          <div style="font-size: 12px;">4% USDG • 2% Cashback • $20 indicação</div>
+          <!-- Substitua por: <img src="beneficios-print.jpg" alt="Benefícios"> -->
+        </div>
+
+        <ul class="benefits">
+          <li><b style="color: #4ade80;">4% a.a.</b> em USDG (stablecoin)</li>
+          <li><b style="color: #4ade80;">2% cashback</b> em todas as compras</li>
+          <li><b style="color: #4ade80;">$20</b> por amigo indicado</li>
+          <li>Sem tarifa mensal</li>
+          <li>Funciona em 150+ países</li>
+          <li>Sem IOF em compras internacionais</li>
+        </ul>
+
+        <div class="comparison">
+          <div class="before">
+            <div class="before-title">❌ Antes</div>
+            <div class="before-value">R$ 0</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cartão tradicional</div>
+          </div>
+          <div class="after">
+            <div class="after-title">✅ Depois</div>
+            <div class="after-value">+2%</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cashback todo mês</div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="window.location.href='https://app.picnicfinance.com/register?ref=NQLMBK'">
+          🚀 Criar conta grátis
+        </button>
+        <div style="text-align: center; margin-top: 8px; font-size: 13px; color: #94a3b8;">
+          Código: <b style="color: #22d3ee;">NQLMBK</b>
+        </div>
+        
+        <div class="disclaimer">
+          💡 Bônus de $10 após gastar $50 nos primeiros 30 dias
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🌎 Conta Global Completa</div>
+        <ul class="benefits">
+          <li>Dólar rendendo 4% a.a.</li>
+          <li>Cartão Mastercard internacional</li>
+          <li>Zero spread na conversão</li>
+          <li>Compre BTC, ETH, USDT facilmente</li>
+        </ul>
+        <button class="btn btn-primary" onclick="window.location.href='https://okx.com/join/5126561'">
+          💎 Abrir conta OKX
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ABA 3: COMO FUNCIONA -->
+    <div id="como" class="tab-content">
+      
+      <div class="card">
+        <div class="card-title">🧠 Simples assim</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">
+          Três passos para começar a ganhar dinheiro
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-text">
+              <b style="color: #f1f5f9; display: block; margin-bottom: 4px;">Você coloca dinheiro</b>
+              Deposite via Pix ou transferência. Comece com quanto tiver.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-text">
+              <b style="color: #f1f5f9; display: block; margin-bottom: 4px;">O sistema trabalha</b>
+              Seu dinheiro fica em pools de liquidez gerando rendimento automático.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-text">
+              <b style="color: #f1f5f9; display: block; margin-bottom: 4px;">Você ganha</b>
+              Receba rendimentos diários. Saque quando quiser.
+            </div>
+          </div>
+        </div>
+
+        <div class="comparison">
+          <div class="before">
+            <div class="before-title">😴 Dinheiro parado</div>
+            <div class="before-value">R$ 1.000</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Poupança: R$ 5/ano</div>
+          </div>
+          <div class="after">
+            <div class="after-title">🚀 Dinheiro rendendo</div>
+            <div class="after-value">R$ 1.000</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cripto: R$ 100+/ano</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎯 Por onde começar?</div>
+        <div class="highlight">
+          <div class="highlight-title">📋 Roteiro recomendado:</div>
+          <ol style="margin-left: 20px; font-size: 14px; color: #cbd5e1; line-height: 2;">
+            <li>Crie conta na <b>Picnic</b> (ganhe $10)</li>
+            <li>Ative o cartão e use no dia a dia (2% cashback)</li>
+            <li>Abra conta na <b>OKX</b> (dólar rendendo 4%)</li>
+            <li>Explore pools na <b>Chainless</b> (até 19% a.a.)</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ Importante saber</div>
+        <ul class="benefits">
+          <li style="color: #fbbf24;">✓ Não é renda fixa tradicional</li>
+          <li style="color: #fbbf24;">✓ Rendimentos variam conforme o mercado</li>
+          <li style="color: #fbbf24;">✓ Pode haver perdas temporárias</li>
+          <li style="color: #fbbf24;">✓ Diversifique para reduzir riscos</li>
+          <li style="color: #fbbf24;">✓ Comece com valores pequenos</li>
+        </ul>
+        <div class="warning">
+          💡 Invista apenas o que você pode deixar parado. Faça sua própria pesquisa.
+        </div>
+      </div>
+
+      <button class="btn btn-success" onclick="showTab('rendimentos')" style="margin-top: 8px;">
+        🚀 Ver oportunidades agora
       </button>
-      <div class="code">Código: <b>17U9R</b></div>
-      <div class="warning">
-        ⚠️ Não é renda fixa. Ganhos variam conforme volume da pool. Pode haver perdas temporárias.
-      </div>
+
     </div>
 
     <!-- FOOTER -->
-    <div class="footer">
-      <p>💡 Dica: Comece pelo cartão Picnic ($10 grátis) → depois ative a conta OKX → depois explore yield na Chainless.</p>
-      <p style="margin-top:12px; opacity:0.6;">Este site é informativo. Faça sua própria pesquisa antes de investir.</p>
+    <div style="text-align: center; padding: 24px; color: #64748b; font-size: 12px;">
+      <p>💡 Dica: Ative todas as abas para maximizar seus ganhos</p>
+      <p style="margin-top: 12px; opacity: 0.6;">
+        Este site é informativo. Criptoativos envolvem riscos.<br>
+        Faça sua própria pesquisa antes de investir.
+      </p>
     </div>
 
   </div>
 
   <script>
-    function calcular() {
-      const valor = parseFloat(document.getElementById("valor").value);
-      if (!valor || valor <= 0) {
-        document.getElementById("resultado").innerHTML = "⚠️ Digite um valor válido";
-        document.getElementById("detalhes").innerHTML = "";
-        return;
-      }
+    function showTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
       
-      const taxaAnual = 0.1971; // ~19.71% a.a.
-      const mensal = (valor * taxaAnual) / 12;
-      const anual = valor * taxaAnual;
-
-      document.getElementById("resultado").innerHTML = 
-        `R$ ${mensal.toFixed(2)} <span style="font-size:14px; font-weight:400">/mês estimado</span>`;
-      document.getElementById("detalhes").innerHTML = 
-        `Em 12 meses: R$ ${anual.toFixed(2)} • Taxa base: ~19% a.a.`;
+      // Remove active class from all buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+      
+      // Smooth scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Animação suave ao carregar cards
+    // Animation on load
     document.addEventListener('DOMContentLoaded', () => {
       const cards = document.querySelectorAll('.card');
-      cards.forEach((card, i) => {
+      cards.forEach((card, index) => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
         setTimeout(() => {
+          card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
           card.style.opacity = '1';
           card.style.transform = 'translateY(0)';
-        }, 200 * i);
+        }, 100 * index);
       });
     });
   </script>
 </body>
 </html>
-.
