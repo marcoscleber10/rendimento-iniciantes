@@ -1,78 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>💰 Ganhar Dinheiro Inteligente</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0f172a;
-      color: #f1f5f9;
-      line-height: 1.5;
-      padding: 16px;
-    }
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    
-    /* HEADER */
-    .header {
-      text-align: center;
-      padding: 20px 0;
-      margin-bottom: 20px;
-    }
-    .header h1 {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #facc15, #22d3ee);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    /* TABS */
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      background: #1e293b;
-      padding: 6px;
-      border-radius: 16px;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 12px 8px;
-      border: none;
-      background: transparent;
-      color: #94a3b8;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .tab-btn.active {
-      background: linear-gradient(135deg, #22d3ee, #06b6d4);
-      color: #0f172a;
-      box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
-    }
-    
-    /* TAB CONTENT */
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.4s ease;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }```html
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -169,21 +95,53 @@
       gap: 8px;
     }
     
-    /* IMAGE PLACEHOLDER */
+    /* SCREENSHOT CONTAINER */
     .screenshot {
-      background: #0f172a;
-      border: 2px dashed #334155;
-      border-radius: 12px;
-      padding: 40px 20px;
-      text-align: center;
+      background: #000;
+      border-radius: 16px;
+      padding: 12px;
       margin: 16px 0;
-      color: #64748b;
+      border: 3px solid #334155;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .screenshot::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), transparent);
+      border-radius: 13px 13px 0 0;
+      pointer-events: none;
     }
     .screenshot img {
-      max-width: 100%;
-      border-radius: 12px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
       display: block;
-      margin: 0 auto;
+    }
+    
+    /* PLACEHOLDER IMAGE */
+    .img-placeholder {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 8px;
+      padding: 60px 20px;
+      text-align: center;
+      border: 2px dashed #475569;
+      position: relative;
+    }
+    .img-placeholder-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .img-placeholder-text {
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
     }
     
     /* BENEFITS LIST */
@@ -359,6 +317,14 @@
       color: #4ade80;
       font-weight: 700;
     }
+    
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: #64748b;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -392,12 +358,14 @@
           Veja quanto seu dinheiro pode render enquanto dorme
         </p>
         
-        <!-- PLACEHOLDER PARA PRINT OKX -->
+        <!-- IMAGEM OKX - Substitua src pela sua imagem -->
         <div class="screenshot">
-          <div style="font-size: 48px; margin-bottom: 8px;">📊</div>
-          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Print OKX Earn</div>
-          <div style="font-size: 12px;">USDT 10% • USDC 10% • XAUT 13%</div>
-          <!-- Substitua por: <img src="caminho-do-print-okx.jpg" alt="OKX Earn"> -->
+          <div class="img-placeholder">
+            <div class="img-placeholder-icon">📊</div>
+            <div class="img-placeholder-text">Imagem OKX Earn</div>
+          </div>
+          <!-- Quando tiver a imagem real, use: -->
+          <!-- <img src="okx-earn.jpg" alt="OKX Earn - Rendimentos"> -->
         </div>
 
         <div class="highlight">
@@ -426,14 +394,16 @@
         </div>
       </div>
 
-      <!-- PLACEHOLDER PARA PRINT CHAINLESS -->
+      <!-- IMAGEM CHAINLESS - Substitua src pela sua imagem -->
       <div class="card">
         <div class="card-title">💰 Rendimento em Real (BRL)</div>
         <div class="screenshot">
-          <div style="font-size: 48px; margin-bottom: 8px;">🇷</div>
-          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Print Chainless</div>
-          <div style="font-size: 12px;">~19% a.a. em BRL</div>
-          <!-- Substitua por: <img src="chainless-print.jpg" alt="Chainless"> -->
+          <div class="img-placeholder">
+            <div class="img-placeholder-icon">🇧🇷</div>
+            <div class="img-placeholder-text">Imagem Chainless</div>
+          </div>
+          <!-- Quando tiver a imagem real, use: -->
+          <!-- <img src="chainless.jpg" alt="Chainless Finance"> -->
         </div>
         <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">
           🚀 Começar na Chainless
@@ -454,12 +424,14 @@
           Cartão internacional com cashback e rendimento
         </p>
 
-        <!-- PLACEHOLDER PARA PRINT BENEFÍCIOS -->
+        <!-- IMAGEM BENEFÍCIOS - Substitua src pela sua imagem -->
         <div class="screenshot">
-          <div style="font-size: 48px; margin-bottom: 8px;">💳</div>
-          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 4px;">Print Benefícios</div>
-          <div style="font-size: 12px;">4% USDG • 2% Cashback • $20 indicação</div>
-          <!-- Substitua por: <img src="beneficios-print.jpg" alt="Benefícios"> -->
+          <div class="img-placeholder">
+            <div class="img-placeholder-icon">💳</div>
+            <div class="img-placeholder-text">Imagem Benefícios</div>
+          </div>
+          <!-- Quando tiver a imagem real, use: -->
+          <!-- <img src="beneficios.jpg" alt="Benefícios do Cartão"> -->
         </div>
 
         <ul class="benefits">
@@ -592,7 +564,7 @@
     </div>
 
     <!-- FOOTER -->
-    <div style="text-align: center; padding: 24px; color: #64748b; font-size: 12px;">
+    <div class="footer">
       <p>💡 Dica: Ative todas as abas para maximizar seus ganhos</p>
       <p style="margin-top: 12px; opacity: 0.6;">
         Este site é informativo. Criptoativos envolvem riscos.<br>
