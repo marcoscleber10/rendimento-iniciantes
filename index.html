@@ -34,7 +34,8 @@
     
     /* TABS */
     .tabs {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-bottom: 20px;
       background: #1e293b;
@@ -42,12 +43,11 @@
       border-radius: 16px;
     }
     .tab-btn {
-      flex: 1;
       padding: 12px 8px;
       border: none;
       background: transparent;
       color: #94a3b8;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       border-radius: 12px;
       cursor: pointer;
@@ -61,6 +61,10 @@
       background: linear-gradient(135deg, #22d3ee, #06b6d4);
       color: #0f172a;
       box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+    }
+    .tab-btn.external {
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #0f172a;
     }
     
     /* TAB CONTENT */
@@ -85,6 +89,39 @@
       margin-bottom: 16px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.4);
     }
+    
+    /* CARD DESTAQUE CHAINLESS */
+    .card-destaque {
+      background: linear-gradient(145deg, #1e293b, #2d1f1f);
+      border: 2px solid #facc15;
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.2), 0 8px 30px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-destaque::before {
+      content: "🔥 MAIOR RENDIMENTO";
+      position: absolute;
+      top: 12px;
+      right: -30px;
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #0f172a;
+      padding: 4px 40px;
+      font-size: 10px;
+      font-weight: 800;
+      transform: rotate(45deg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .badge-destaque {
+      display: inline-block;
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: #0f172a;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    
     .card-title {
       font-size: 18px;
       font-weight: 700;
@@ -137,6 +174,11 @@
       border-radius: 10px;
       border: 1px solid #334155;
     }
+    .yield-item.destaque {
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(245, 158, 11, 0.1));
+      border: 2px solid #facc15;
+      padding: 16px;
+    }
     .yield-coin {
       display: flex;
       align-items: center;
@@ -145,23 +187,28 @@
       font-size: 14px;
     }
     .yield-icon {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: 700;
     }
     .yield-icon.usdt { background: #22d3ee; color: #0f172a; }
     .yield-icon.usdc { background: #3b82f6; color: white; }
     .yield-icon.xaut { background: #fbbf24; color: #0f172a; }
     .yield-icon.btc { background: #f97316; color: white; }
-    .yield-icon.brl { background: #22c55e; color: white; }
+    .yield-icon.brl { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
     .yield-percent {
       font-weight: 800;
-      font-size: 15px;
+      font-size: 16px;
       color: #4ade80;
+    }
+    .yield-item.destaque .yield-percent {
+      font-size: 20px;
+      color: #facc15;
     }
     .yield-label {
       font-size: 11px;
@@ -422,6 +469,42 @@
       border-left: 3px solid #f87171;
     }
     
+    /* TOP POOL SECTION */
+    .pool-section {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .pool-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+    .pool-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .pool-desc {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .pool-features {
+      text-align: left;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .pool-features li {
+      padding: 8px 0;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+    
     /* FOOTER */
     .footer {
       text-align: center;
@@ -442,24 +525,192 @@
 
     <!-- TABS NAVIGATION -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('rendimentos')">
-        📊 Rendimentos
+      <button class="tab-btn active" onclick="showTab('chainless')">
+        🔥 Chainless
       </button>
-      <button class="tab-btn" onclick="showTab('beneficios')">
-        💳 Benefícios
+      <button class="tab-btn" onclick="showTab('picnic')">
+        💳 Picnic
       </button>
-      <button class="tab-btn" onclick="showTab('como')">
-        🧠 Como funciona
+      <button class="tab-btn" onclick="showTab('okx')">
+        🌎 OKX
+      </button>
+      <button class="tab-btn external" onclick="window.open('https://marcoscleber10.github.io/pool/', '_blank')">
+        🏊 Top Pool
       </button>
     </div>
 
-    <!-- ABA 1: RENDIMENTOS -->
-    <div id="rendimentos" class="tab-content active">
+    <!-- ABA 1: CHAINLESS (DESTAQUE PRINCIPAL) -->
+    <div id="chainless" class="tab-content active">
+      
+      <div class="card card-destaque">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <span class="badge-destaque">🏆 MAIOR RENDIMENTO EM REAL</span>
+          <div class="card-title" style="justify-content: center; margin-top: 8px;">
+            💰 Chainless Finance
+          </div>
+          <p style="color: #94a3b8; font-size: 14px;">
+            Rendimento em BRL com saque flexível
+          </p>
+        </div>
+        
+        <!-- REPRESENTAÇÃO CHAINLESS DESTACADA -->
+        <div class="app-screen" style="border-color: #facc15;">
+          <div class="app-header">
+            <div>
+              <div class="app-title" style="color: #facc15;">Chainless Finance</div>
+              <div class="app-subtitle">Pool de Liquidez • Brasil</div>
+            </div>
+            <div style="font-size: 28px;">🇧🇷</div>
+          </div>
+          
+          <div class="yield-item destaque" style="margin: 12px 0;">
+            <div class="yield-coin">
+              <div class="yield-icon brl">R$</div>
+              <div>
+                <div style="font-weight: 700; color: #f1f5f9;">Real Brasileiro</div>
+                <div class="yield-label">Pool BRL/USDC • Taxas + Rewards</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div class="yield-percent">~19%</div>
+              <div class="yield-label" style="color: #facc15; font-weight: 700;">a.a. estimado</div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; padding: 10px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 800; color: #4ade80;">✓</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Saque Flexível</div>
+            </div>
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; padding: 10px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 800; color: #4ade80;">✓</div>
+              <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Pix Integrado</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, rgba(250, 204, 21, 0.1), rgba(245, 158, 11, 0.05)); border: 1px solid #facc15; border-radius: 12px; padding: 16px; margin: 16px 0;">
+          <div style="font-weight: 700; color: #facc15; margin-bottom: 8px; font-size: 14px;">💡 Por que é o melhor rendimento?</div>
+          <ul class="benefits" style="margin: 0;">
+            <li style="border: none; padding: 6px 0; font-size: 13px;">📈 Ganhe taxas de quem troca cripto</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💰 Rewards adicionais em tokens</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">🔄 Rendimento diário automático</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💸 Saque a qualquer momento</li>
+          </ul>
+        </div>
+
+        <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">
+          🚀 Começar Agora - Código: 17U9R
+        </button>
+        
+        <div class="disclaimer" style="text-align: center;">
+          ⚠️ Rendimentos variam conforme o mercado. Não é renda fixa.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Comparativo de Rendimentos</div>
+        <div class="comparison">
+          <div class="before">
+            <div class="before-title">🏦 Poupança</div>
+            <div class="before-value">~6% a.a.</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Rendimento baixo</div>
+          </div>
+          <div class="after">
+            <div class="after-title">🔥 Chainless</div>
+            <div class="after-value">~19% a.a.</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">+216% mais que poupança</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ABA 2: PICNIC (CARTÃO/CASHBACK) -->
+    <div id="picnic" class="tab-content">
       
       <div class="card">
-        <div class="card-title">📈 Resultados reais de rendimento</div>
+        <div class="card-title">💳 Picnic - Cartão com Cashback</div>
         <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
-          Veja quanto seu dinheiro pode render enquanto dorme
+          Ganhe dinheiro enquanto gasta no dia a dia
+        </p>
+
+        <!-- REPRESENTAÇÃO BENEFÍCIOS -->
+        <div class="app-screen">
+          <div class="app-header">
+            <div>
+              <div class="app-title">Picnic Finance</div>
+              <div class="app-subtitle">Cartão Internacional • Rewards</div>
+            </div>
+            <div style="font-size: 24px;">💳</div>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="benefit-card-title">💵 Recompensas em USDG</div>
+            <div class="benefit-value">4%</div>
+            <div class="benefit-desc">APY em stablecoin • Rendimento automático</div>
+          </div>
+          
+          <div class="benefit-card" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.05)); border-color: #22d3ee;">
+            <div class="benefit-card-title" style="color: #22d3ee;">💳 Cashback nas Compras</div>
+            <div class="benefit-value" style="color: #22d3ee;">2%</div>
+            <div class="benefit-desc">Em todas as compras • Sem limite mensal</div>
+          </div>
+          
+          <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid #fbbf24; border-radius: 10px; padding: 12px; margin-top: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="font-size: 24px;">👥</div>
+              <div>
+                <div style="font-weight: 700; color: #fbbf24; font-size: 14px;">Indique e ganhe</div>
+                <div style="font-size: 12px; color: #94a3b8;">US$ 20 por cadastro aprovado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="benefits">
+          <li><b style="color: #4ade80;">4% a.a.</b> em USDG (stablecoin)</li>
+          <li><b style="color: #4ade80;">2% cashback</b> em todas as compras</li>
+          <li><b style="color: #4ade80;">$20</b> por amigo indicado</li>
+          <li>Sem tarifa mensal ou anuidade</li>
+          <li>Funciona em 150+ países</li>
+          <li>Sem IOF em compras internacionais</li>
+        </ul>
+
+        <div class="comparison">
+          <div class="before">
+            <div class="before-title">❌ Cartão Tradicional</div>
+            <div class="before-value">R$ 0</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Sem benefícios</div>
+          </div>
+          <div class="after">
+            <div class="after-title">✅ Picnic</div>
+            <div class="after-value">+2%</div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cashback todo mês</div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="window.location.href='https://app.picnicfinance.com/register?ref=NQLMBK'">
+          🚀 Criar conta grátis
+        </button>
+        <div style="text-align: center; margin-top: 8px; font-size: 13px; color: #94a3b8;">
+          Código: <b style="color: #22d3ee;">NQLMBK</b>
+        </div>
+        
+        <div class="disclaimer">
+          💡 Bônus de $10 após gastar $50 nos primeiros 30 dias
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ABA 3: OKX (CONTA GLOBAL) -->
+    <div id="okx" class="tab-content">
+      
+      <div class="card">
+        <div class="card-title">🌎 OKX - Conta Global em Dólar</div>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
+          Conta internacional com rendimento em stablecoins
         </p>
         
         <!-- REPRESENTAÇÃO OKX EARN -->
@@ -467,7 +718,7 @@
           <div class="app-header">
             <div>
               <div class="app-title">OKX Earn</div>
-              <div class="app-subtitle">Simple Earn • Rendimentos</div>
+              <div class="app-subtitle">Simple Earn • Stablecoins</div>
             </div>
             <div style="font-size: 24px;">🟢</div>
           </div>
@@ -478,7 +729,7 @@
                 <div class="yield-icon usdt">💵</div>
                 <div>
                   <div>USDT</div>
-                  <div class="yield-label">Flexible</div>
+                  <div class="yield-label">Tether • Flexible</div>
                 </div>
               </div>
               <div style="text-align: right;">
@@ -492,7 +743,7 @@
                 <div class="yield-icon usdc">💠</div>
                 <div>
                   <div>USDC</div>
-                  <div class="yield-label">Flexible</div>
+                  <div class="yield-label">USD Coin • Flexible</div>
                 </div>
               </div>
               <div style="text-align: right;">
@@ -503,7 +754,7 @@
             
             <div class="yield-item">
               <div class="yield-coin">
-                <div class="yield-icon xaut"></div>
+                <div class="yield-icon xaut">🥇</div>
                 <div>
                   <div>XAUT</div>
                   <div class="yield-label">Gold Token</div>
@@ -532,24 +783,20 @@
         </div>
 
         <div class="highlight">
-          <div class="highlight-title">💡 Como funciona esse rendimento?</div>
+          <div class="highlight-title">💡 O que é OKX?</div>
+          <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 8px;">
+            É uma <b>conta global</b> que permite:
+          </p>
           <ul class="benefits" style="margin: 0;">
-            <li style="border: none; padding: 6px 0;">📈 Vem de pools de liquidez</li>
-            <li style="border: none; padding: 6px 0;">💰 Você ganha taxas de quem faz trocas</li>
-            <li style="border: none; padding: 6px 0;">🔄 O valor varia diariamente</li>
-            <li style="border: none; padding: 6px 0;">💸 Saque flexível a qualquer momento</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💵 Guardar dólares rendendo 4% a.a.</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💳 Cartão Mastercard internacional</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">💱 Comprar BTC, ETH, USDT facilmente</li>
+            <li style="border: none; padding: 6px 0; font-size: 13px;">🌍 Usar em 150+ países sem IOF</li>
           </ul>
         </div>
 
-        <div class="badge-row">
-          <div class="badge">USDT <span class="badge-percent">10%</span></div>
-          <div class="badge">USDC <span class="badge-percent">10%</span></div>
-          <div class="badge">XAUT <span class="badge-percent">13%</span></div>
-          <div class="badge">BTC <span class="badge-percent">5%</span></div>
-        </div>
-
         <button class="btn btn-success" onclick="window.location.href='https://okx.com/join/5126561'">
-          👉 Quero fazer igual
+          👉 Abrir conta OKX grátis
         </button>
         
         <div class="disclaimer">
@@ -557,252 +804,38 @@
         </div>
       </div>
 
-      <!-- REPRESENTAÇÃO CHAINLESS -->
-      <div class="card">
-        <div class="card-title">💰 Rendimento em Real (BRL)</div>
-        
-        <div class="app-screen">
-          <div class="app-header">
-            <div>
-              <div class="app-title">Chainless Finance</div>
-              <div class="app-subtitle">Pool de Liquidez • BRL</div>
-            </div>
-            <div style="font-size: 24px;">🇧🇷</div>
-          </div>
-          
-          <div class="yield-item" style="margin: 12px 0;">
-            <div class="yield-coin">
-              <div class="yield-icon brl">R$</div>
-              <div>
-                <div>Real Brasileiro</div>
-                <div class="yield-label">Pool BRL/USDC</div>
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div class="yield-percent">~19%</div>
-              <div class="yield-label">a.a. estimado</div>
-            </div>
-          </div>
-          
-          <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; padding: 10px; margin-top: 12px;">
-            <div style="font-size: 12px; color: #4ade80; font-weight: 600; margin-bottom: 4px;">✨ Benefícios</div>
-            <div style="font-size: 11px; color: #94a3b8;">✓ Saque flexível</div>
-            <div style="font-size: 11px; color: #94a3b8;">✓ Sem taxa de depósito</div>
-            <div style="font-size: 11px; color: #94a3b8;">✓ Pix integrado</div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" onclick="window.location.href='https://chainless.finance/download'">
-          🚀 Começar na Chainless
-        </button>
-        <div style="text-align: center; margin-top: 8px; font-size: 13px; color: #94a3b8;">
-          Código: <b style="color: #facc15;">17U9R</b>
-        </div>
-      </div>
-
     </div>
 
-    <!-- ABA 2: BENEFÍCIOS -->
-    <div id="beneficios" class="tab-content">
-      
-      <div class="card">
-        <div class="card-title">💳 Ganhe enquanto gasta</div>
-        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
-          Cartão internacional com cashback e rendimento
-        </p>
-
-        <!-- REPRESENTAÇÃO BENEFÍCIOS -->
-        <div class="app-screen">
-          <div class="app-header">
-            <div>
-              <div class="app-title">Benefícios</div>
-              <div class="app-subtitle">Picnic Finance • Rewards</div>
-            </div>
-            <div style="font-size: 24px;">💳</div>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-card-title">💵 Recompensas em USDG</div>
-            <div class="benefit-value">4%</div>
-            <div class="benefit-desc">APY em stablecoin • Rendimento automático</div>
-          </div>
-          
-          <div class="benefit-card" style="background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.05)); border-color: #22d3ee;">
-            <div class="benefit-card-title" style="color: #22d3ee;">💳 Recompensas do Cartão</div>
-            <div class="benefit-value" style="color: #22d3ee;">2%</div>
-            <div class="benefit-desc">Cashback em todas as compras • Sem limite</div>
-          </div>
-          
-          <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid #fbbf24; border-radius: 10px; padding: 12px; margin-top: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="font-size: 24px;">👥</div>
-              <div>
-                <div style="font-weight: 700; color: #fbbf24; font-size: 14px;">Indique e ganhe</div>
-                <div style="font-size: 12px; color: #94a3b8;">US$ 20 por cadastro</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <ul class="benefits">
-          <li><b style="color: #4ade80;">4% a.a.</b> em USDG (stablecoin)</li>
-          <li><b style="color: #4ade80;">2% cashback</b> em todas as compras</li>
-          <li><b style="color: #4ade80;">$20</b> por amigo indicado</li>
-          <li>Sem tarifa mensal</li>
-          <li>Funciona em 150+ países</li>
-          <li>Sem IOF em compras internacionais</li>
-        </ul>
-
-        <div class="comparison">
-          <div class="before">
-            <div class="before-title">❌ Antes</div>
-            <div class="before-value">R$ 0</div>
-            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cartão tradicional</div>
-          </div>
-          <div class="after">
-            <div class="after-title">✅ Depois</div>
-            <div class="after-value">+2%</div>
-            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cashback todo mês</div>
-          </div>
-        </div>
-
-        <button class="btn btn-secondary" onclick="window.location.href='https://app.picnicfinance.com/register?ref=NQLMBK'">
-          🚀 Criar conta grátis
-        </button>
-        <div style="text-align: center; margin-top: 8px; font-size: 13px; color: #94a3b8;">
-          Código: <b style="color: #22d3ee;">NQLMBK</b>
+    <!-- ABA 4: TOP POOL (LINK EXTERNO) -->
+    <div id="toppool" class="tab-content">
+      <div class="card pool-section">
+        <div class="pool-icon">🏊</div>
+        <div class="pool-title">Top Pools DeFi</div>
+        <div class="pool-desc">
+          Acesse nossa ferramenta exclusiva para encontrar as melhores pools de liquidez com maior rendimento e menor risco
         </div>
         
-        <div class="disclaimer">
-          💡 Bônus de $10 após gastar $50 nos primeiros 30 dias
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">🌎 Conta Global Completa</div>
-        
-        <div class="card-visual">
-          <div class="card-chip"></div>
-          <div class="card-number">•••• •••• •••• 8842</div>
-          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-              <div style="font-size: 11px; color: #94a3b8;">CARDHOLDER</div>
-              <div style="font-size: 13px; font-weight: 600; color: #f1f5f9;">YOUR NAME</div>
-            </div>
-            <div style="font-size: 20px; font-weight: 800; color: #fbbf24;">mastercard</div>
-          </div>
-          <div class="card-rewards">
-            <div class="card-reward-item">
-              <div class="card-reward-value">4%</div>
-              <div style="font-size: 10px; color: #94a3b8;">Yield</div>
-            </div>
-            <div class="card-reward-item">
-              <div class="card-reward-value">2%</div>
-              <div style="font-size: 10px; color: #94a3b8;">Cashback</div>
-            </div>
-            <div class="card-reward-item">
-              <div class="card-reward-value">$0</div>
-              <div style="font-size: 10px; color: #94a3b8;">Anuidade</div>
-            </div>
-          </div>
-        </div>
-
-        <ul class="benefits">
-          <li>Dólar rendendo 4% a.a.</li>
-          <li>Cartão Mastercard internacional</li>
-          <li>Zero spread na conversão</li>
-          <li>Compre BTC, ETH, USDT facilmente</li>
+        <ul class="pool-features">
+          <li>✓ Análise de 50+ pares premium</li>
+          <li>✓ Score visual de risco</li>
+          <li>✓ Estratégias prontas</li>
+          <li>✓ Atualização automática a cada 15 min</li>
+          <li>✓ Setup recomendado para cada perfil</li>
         </ul>
-        <button class="btn btn-primary" onclick="window.location.href='https://okx.com/join/5126561'">
-          💎 Abrir conta OKX
+
+        <button class="btn btn-primary" onclick="window.open('https://marcoscleber10.github.io/pool/', '_blank')" style="margin-bottom: 12px;">
+          🚀 Acessar Top Pool Agora
         </button>
-      </div>
-
-    </div>
-
-    <!-- ABA 3: COMO FUNCIONA -->
-    <div id="como" class="tab-content">
-      
-      <div class="card">
-        <div class="card-title">🧠 Simples assim</div>
-        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">
-          Três passos para começar a ganhar dinheiro
-        </p>
-
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-text">
-              <b style="color: #f1f5f9; display: block; margin-bottom: 4px;">Você coloca dinheiro</b>
-              Deposite via Pix ou transferência. Comece com quanto tiver.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-text">
-              <b style="color: #f1f5f9; display: block; margin-bottom: 4px;">O sistema trabalha</b>
-              Seu dinheiro fica em pools de liquidez gerando rendimento automático.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-text">
-              <b style="color: #f1f5f9; display: block; margin-bottom: 4px;">Você ganha</b>
-              Receba rendimentos diários. Saque quando quiser.
-            </div>
-          </div>
-        </div>
-
-        <div class="comparison">
-          <div class="before">
-            <div class="before-title">😴 Dinheiro parado</div>
-            <div class="before-value">R$ 1.000</div>
-            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Poupança: R$ 5/ano</div>
-          </div>
-          <div class="after">
-            <div class="after-title">🚀 Dinheiro rendendo</div>
-            <div class="after-value">R$ 1.000</div>
-            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Cripto: R$ 100+/ano</div>
-          </div>
+        
+        <div style="font-size: 12px; color: #64748b; margin-top: 16px;">
+          Abrirá em nova aba
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-title">🎯 Por onde começar?</div>
-        <div class="highlight">
-          <div class="highlight-title">📋 Roteiro recomendado:</div>
-          <ol style="margin-left: 20px; font-size: 14px; color: #cbd5e1; line-height: 2;">
-            <li>Crie conta na <b>Picnic</b> (ganhe $10)</li>
-            <li>Ative o cartão e use no dia a dia (2% cashback)</li>
-            <li>Abra conta na <b>OKX</b> (dólar rendendo 4%)</li>
-            <li>Explore pools na <b>Chainless</b> (até 19% a.a.)</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">⚠️ Importante saber</div>
-        <ul class="benefits">
-          <li style="color: #fbbf24;">✓ Não é renda fixa tradicional</li>
-          <li style="color: #fbbf24;">✓ Rendimentos variam conforme o mercado</li>
-          <li style="color: #fbbf24;">✓ Pode haver perdas temporárias</li>
-          <li style="color: #fbbf24;">✓ Diversifique para reduzir riscos</li>
-          <li style="color: #fbbf24;">✓ Comece com valores pequenos</li>
-        </ul>
-        <div class="warning">
-          💡 Invista apenas o que você pode deixar parado. Faça sua própria pesquisa.
-        </div>
-      </div>
-
-      <button class="btn btn-success" onclick="showTab('rendimentos')" style="margin-top: 8px;">
-        🚀 Ver oportunidades agora
-      </button>
-
     </div>
 
     <!-- FOOTER -->
     <div class="footer">
-      <p>💡 Dica: Ative todas as abas para maximizar seus ganhos</p>
+      <p>💡 Dica: Comece pela Chainless (maior rendimento) → depois ative o Picnic (cashback) → depois OKX (dólar)</p>
       <p style="margin-top: 12px; opacity: 0.6;">
         Este site é informativo. Criptoativos envolvem riscos.<br>
         Faça sua própria pesquisa antes de investir.
